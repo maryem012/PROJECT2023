@@ -1,0 +1,80 @@
+
+
+<p-toast></p-toast>
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="j_idt7">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Identification</title><link type="text/css" rel="stylesheet" href="/javax.faces.resource/theme.css.faces?ln=primefaces-saga&amp;v=11.0.0&amp;e=11.0.0"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/primeicons/primeicons.css.faces?ln=primefaces&amp;v=11.0.0&amp;e=11.0.0"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/lib/google-fonts/poppins/poppins-regular.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/lib/font-awesome/css/all.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/lib/animate/animate.min.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/metronic.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/metronic-plugins.bundle.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/metronic-form-ui.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/metronic-hcare.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/metronic-icons.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/app-ui.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/app-fieldset.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/css/login.css.faces"><link type="text/css" rel="stylesheet" href="/javax.faces.resource/components.css.faces?ln=primefaces&amp;v=11.0.0&amp;e=11.0.0"><script type="text/javascript" src="/javax.faces.resource/jquery/jquery.js.faces?ln=primefaces&amp;v=11.0.0&amp;e=11.0.0"></script><script type="text/javascript" src="/javax.faces.resource/jquery/jquery-plugins.js.faces?ln=primefaces&amp;v=11.0.0&amp;e=11.0.0"></script><script type="text/javascript" src="/javax.faces.resource/core.js.faces?ln=primefaces&amp;v=11.0.0&amp;e=11.0.0"></script>
+<style>
+  /*.grecaptcha-badge { visibility: hidden; }*/
+</style>
+<link rel="icon" type="image/x-icon" href="/javax.faces.resource/img/favicon.ico.faces"></head>
+<body class="login" style="background-position: center ;background-image: url('https://edx.tek-up.de/public/servlet/configFile/globalConfiguration_LW=SBnslKWDGrjko1o25e7SNO5YHpvbWgY7WUGJAR2j6KMGjhX.jpg/AFFICHAGE/LOGIN_BG')">
+    
+<div class="environment Production"></div>
+<div class="form-signin">
+  <div>
+      <div class="text-center logo-wrapper mb-10"><a href=""><span class="home-logo"><img alt="" border="0" height="89" hspace="0" src="https://edx.tek-up.de/media/image?i=202304-1/UQERjxJmWEcwXsTHLwlL8=nATv260qf-PTLrlID2.png" style="width:242px;height:89px;margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px;border:0px solid black;" vspace="0" width="242"></span></a>
+      </div>
+
+      <div class="mb-5">
+          <h5 class="text-center font-weight-light text-light"></h5>
+      </div>
+<div class="tab-content login-form">
+<div id="login2" class="tab-pane active">
+<form id="form" name="form" method="post" action="/login.faces" enctype="multipart/form-data; charset=utf-8">
+<input type="hidden" name="form" value="form">
+
+      <div class="mb-5">
+          <h5 class="text-center font-weight-light text-light">
+            Please enter your login and password</h5>
+      </div><div id="j_idt70" class="ui-outputpanel ui-widget sge-inline-msg">
+<div id="loginMessages">
+</div></div>
+          <div class="input-group mb-2"style="flex-wrap: nowrap;">
+              <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="pi pi-user" style="height:40px;"></i>
+                  </span>
+              </div>
+              <input id="email" name="email" required [(ngModel)]="user.email" type="text" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-control form-control-lg ui-state-filled" aria-required="true" placeholder="Email" role="textbox" aria-readonly="false" aria-disabled="false">
+          </div>
+          <div class="input-group mb-2" style="flex-wrap: nowrap;">
+              <div class="input-group-prepend">
+                  <span class="input-group-text" id="password-addon2"><i class="pi pi-lock" style="height:34px;"></i></span>
+              </div><span class="ui-password ui-inputwrapper ui-input-icon-right ui-inputwrapper-filled ui-password-unmasked">
+                <input id="password" name="password" type="password" class="ui-inputfield ui-widget ui-state-default ui-corner-all form-control form-control-lg ui-state-filled" aria-required="true" placeholder="Password" aria-disabled="false"required [(ngModel)]="user.password">
+                <i id="password_mask" class="ui-password-icon"></i></span>
+              </div>
+            <div >
+            <button  id="loginstep1" name="loginstep1" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only btn btn-lg btn-primary btn-block"  style="width: 520px;" label="Mot de passe" type="submit"(click)="login()">
+              <span class="ui-button-text ui-c">LOGIN</span></button></div>
+
+
+</form>
+
+
+</div><div id="forgot" class="ui-outputpanel ui-widget tab-pane">
+</div>
+</div>
+<div class="mt-10"></div><div id="j_idt143" class="ui-outputpanel ui-widget">
+<div class="text-center">
+  <ul class="list-inline d-flex justify-content-center flex-gap-20">
+
+      <li><a class="" href="#forgot" data-toggle="tab" id="reset-link">forgot password ?</a></li>
+  </ul>
+</div></div>
+
+
+  </div>
+  <div class="mt-10"></div>
+  <div class="copyright text-center text-white small">
+<div class="font-weight-boldest">TEK-UP</div>
+© 2023-2024
+4M group<br>
+All rights reserved.
+<div class="mt-2">
+</div>
+  </div>
+</div>
+<div id="textarea_simulator" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"></div><div class="ui-dialog-docking-zone"></div></body></html>

@@ -1,0 +1,64 @@
+fieldset {
+    margin-top: 5px !important;
+    margin-bottom: 15px !important;
+    padding-top: 1.5em !important;
+    padding-bottom: 1.5em !important;
+}
+
+body .ui-icon-minusthick {
+    background-position: -65px -15px;
+}
+
+body .ui-icon-plusthick {
+    background-position: -34px -16px;
+}
+
+body .ui-fieldset-toggleable .ui-fieldset-legend:after {
+    content: " ";
+    padding-right: .5em;
+}
+
+.actionFieldset legend.ui-state-default {
+    /*color: #08c!important;*/
+    padding-right: 4px!important;
+    margin-left: 2%;
+    width: auto;
+    font-size: 13px!important;
+    margin-bottom: 0!important;
+    border: 1px solid #d3d3d3!important;
+    background: none;
+    background-image: none;
+    font-weight: 600;
+}
+
+.sge-inline-fieldset-left, .sge-inline-fieldset-right {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+@media (min-width: 1280px) {
+    .ui-tabs-top.tabAc > .ui-tabs-nav>li>a {
+        padding: .7em 1.5em!important;
+    }
+
+    .sge-inline-fieldset-left, .sge-inline-fieldset-right {
+        display: inline;
+        width: 49%;
+    }
+
+    .sge-inline-fieldset-left {
+        margin-right: 1%;
+    }
+
+    .sge-inline-fieldset-right {
+        margin-left: 1%;
+    }
+
+    .sge-inline-fieldset-left .ui-paginator, .sge-inline-fieldset-right .ui-paginator {
+        display: table;
+        width: 100%;
+    }
+
+}

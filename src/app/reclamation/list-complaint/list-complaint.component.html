@@ -1,0 +1,35 @@
+<app-header></app-header>
+<app-menu-bar></app-menu-bar>
+
+<div class="container-fluid">
+
+
+
+    <p-table [value]="loadedCom">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Date</th>
+          <th>Subject</th>
+          <th>department</th>
+          <th>description</th>
+          <th>Status</th>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-loadedCom>
+        <tr>
+          <td>{{ loadedCom.createdAt  | date:'dd/MM/yyyy' }}</td>
+          <td>{{ loadedCom.subject }}</td>
+          <td>{{ loadedCom.department }}</td>
+          <td>{{ loadedCom.description }}</td>
+
+
+
+          <td>    <p-tag severity="warning" value={{loadedCom.status}} ></p-tag>
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+</div>
+

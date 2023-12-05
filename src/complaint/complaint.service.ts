@@ -5,7 +5,8 @@ import { complaint } from './interface/complaint.interface';
 import { complaintDto } from './dto/complaint.dto';
 
 @Injectable()
-export class ComplaintService { constructor(@InjectModel('complaint') private readonly complaintModel: Model<complaint>,) { }
+export class ComplaintService {
+   constructor(@InjectModel('complaint') private readonly complaintModel: Model<complaint>,) { }
 
 async getcomplaints(): Promise<complaint[]> {
   const complaints = await this.complaintModel.find() ;

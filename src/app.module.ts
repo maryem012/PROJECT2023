@@ -17,6 +17,10 @@ import { AuthService } from './auth/auth.service';
 import { CertificationController } from './certification/certification.controller';
 import { CertificationService } from './certification/certification.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SurveyController } from './survey/survey.controller';
+import { SurveyService } from './survey/survey.service';
+import { MulterModule } from '@nestjs/platform-express';
+import { SurveyModule } from './survey/survey.module';
 
 @Module({
 
@@ -29,6 +33,10 @@ import { MongooseModule } from '@nestjs/mongoose';
         ComplaintModule, 
         RequestModule, 
         UserModule,
+        MulterModule.register({
+          dest: './uploads', // Specify the destination folder where uploaded files will be stored
+        }),
+        SurveyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -111,6 +111,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddCertifComponent } from './certification/add-certif/add-certif.component';
 import { ListComplaintComponent } from './reclamation/list-complaint/list-complaint.component';
 import { CertificationComponent } from './certification/certfication.component';
+import { SurveyCreatorComponent } from './survey-creator/survey-creator.component';
+import { SurveyCreatorModule } from 'survey-creator-angular';
+import { SurveyManagementComponent } from './admin-panel/survey-management/survey-management.component';
+import { SurveyListComponent } from './survey/survey-list/survey-list.component';
 
 @NgModule({
   declarations: [
@@ -130,6 +134,9 @@ import { CertificationComponent } from './certification/certfication.component';
     StudentManagementComponent,
     AddCertifComponent,
     ListComplaintComponent,
+    SurveyCreatorComponent,
+    SurveyManagementComponent,
+    SurveyListComponent,
   ],
   imports: [
     HttpClientModule,
@@ -160,8 +167,10 @@ import { CertificationComponent } from './certification/certfication.component';
     MessageModule,
 ConfirmDialogModule,
 MessagesModule,
+FileUploadModule,
 TableModule,
-TagModule
+TagModule,
+SurveyCreatorModule,
   ],
   providers: [UserService, MessageService, ConfirmationService, DatePipe,
     ],

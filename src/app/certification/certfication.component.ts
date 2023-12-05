@@ -10,16 +10,9 @@ import { certification } from '../interfaces/certification';
 })
 export class CertificationComponent {
   student: any;
+  loadedCert:any;
   today = new Date();
-  cer: certification = {
-    studentName: "",
-    studentId: "",
-    createdAt: new Date(),
-    optainedAt: new Date(),
-    Title:  "",
-    provider:  "",
-    file: "",
-  };
+  studId:any;
   isSubmitting = false;
   constructor(
     private messageService: MessageService,
@@ -27,68 +20,21 @@ export class CertificationComponent {
   ) {}
 
   ngOnInit(): void {
-    this.student = JSON.parse(localStorage.getItem('user') || '{}');
+    this.student = localStorage.getItem('user');
+    this.student = JSON.parse(this.student);
+    this.studId=this.student._id
+this.loadCertifications();
   }
 
-  createCert(): void {
-    if (this.isSubmitting) {
-      return; // Prevent duplicate submissions
+
+
+  loadCertifications(){
+    this.certificationService.getCertifications().subscribe(res=>{
+     console.log(res)
+     this.loadedCert=res.filter((row)=>row.studentId===this.studId)
+
+     console.log(this.loadedCert)
+   }
+     )
     }
-
-    const data = {
-      studentName: `${this.student.firstName} ${this.student.lastName}`,
-      studentId: this.student._id,
-      createdAt: this.today,
-      optainedAt: this.cer.optainedAt,
-      Title: this.cer.Title,
-      provider: this.cer.provider,
-      file: this.cer.file
-    };
-
-    this.isSubmitting = true;
-
-    this.certificationService.createCertification(data).subscribe({
-      next: (res: any) => {
-        console.log(res);
-        this.isSubmitting = false; // Set back to false after successful submission
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Certification successfully saved',
-          life: 3000,
-        });
-        this.resetForm(); // Reset the form after successful submission
-      },
-      error: (e: any) => {
-        console.error(e); // Log error for debugging purposes
-        this.isSubmitting = false; // Set back to false in case of error
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Certification not saved, please try again',
-          life: 3000,
-        });
-      }
-    });
-  }
-
-  private resetForm(): void {
-    this.cer = {
-      studentId: this.student?._id || '',
-      studentName: `${this.student?.firstName} ${this.student?.lastName}` || '',
-      createdAt: new Date(),
-      optainedAt: new Date(),
-      Title:  "",
-      provider:  "",
-      file: "",
-    };
-  }
-  onFileChange(event: any) {
-    const files = event.target.files;
-    if (files.length > 0) {
-      // Handle file(s) here, e.g., assign it to a field in your component
-      // Example: this.cer.file = files[0];
-      console.log(files[0]); // Log the file object for testing purposes
-    }
-  }
 }

@@ -1,173 +1,34 @@
-<p-toast></p-toast>
-
 <app-header></app-header>
 <app-menu-bar></app-menu-bar>
-<script src="https://cdn03.jotfor.ms/static/prototype.forms.js?3.3.48100" type="text/javascript"></script>
-<script src="https://cdn01.jotfor.ms/static/jotform.forms.js?3.3.48100" type="text/javascript"></script>
-<script src="https://cdn02.jotfor.ms/js/vendor/jquery-1.8.0.min.js?v=3.3.48100" type="text/javascript"></script>
-<script defer src="https://cdn03.jotfor.ms/js/vendor/maskedinput.min.js?v=3.3.48100" type="text/javascript"></script>
-<script defer src="https://cdn01.jotfor.ms/js/vendor/jquery.maskedinput.min.js?v=3.3.48100" type="text/javascript"></script>
-<script src="https://cdn02.jotfor.ms/js/vendor/imageinfo.js?v=3.3.48100" type="text/javascript"></script>
-<script src="https://cdn03.jotfor.ms/file-uploader/fileuploader.js?v=3.3.48100"></script>
-<script src="https://cdn01.jotfor.ms/js/payments/validategateways.js?v=3.3.48100" type="text/javascript"></script>
-<script src="https://cdn01.jotfor.ms/s/umd/3de44934ebd/for-form-branding-footer.js?v=3.3.48100" type="text/javascript" defer></script>
-<script type="text/javascript">	JotForm.newDefaultTheme = true;
-	JotForm.extendsNewTheme = false;
-	JotForm.singleProduct = false;
-	JotForm.newPaymentUIForNewCreatedForms = false;
-	JotForm.texts = {"confirmEmail":"E-mail does not match","pleaseWait":"Please wait...","validateEmail":"You need to validate this e-mail","confirmClearForm":"Are you sure you want to clear the form","lessThan":"Your score should be less than or equal to","incompleteFields":"There are incomplete required fields. Please complete them.","required":"This field is required.","requireOne":"At least one field required.","requireEveryRow":"Every row is required.","requireEveryCell":"Every cell is required.","email":"Enter a valid e-mail address","alphabetic":"This field can only contain letters","numeric":"This field can only contain numeric values","alphanumeric":"This field can only contain letters and numbers.","cyrillic":"This field can only contain cyrillic characters","url":"This field can only contain a valid URL","currency":"This field can only contain currency values.","fillMask":"Field value must fill mask.","uploadExtensions":"You can only upload following files:","noUploadExtensions":"File has no extension file type (e.g. .txt, .png, .jpeg)","uploadFilesize":"File size cannot be bigger than:","uploadFilesizemin":"File size cannot be smaller than:","gradingScoreError":"Score total should only be less than or equal to","inputCarretErrorA":"Input should not be less than the minimum value:","inputCarretErrorB":"Input should not be greater than the maximum value:","maxDigitsError":"The maximum digits allowed is","minCharactersError":"The number of characters should not be less than the minimum value:","maxCharactersError":"The number of characters should not be more than the maximum value:","freeEmailError":"Free email accounts are not allowed","minSelectionsError":"The minimum required number of selections is ","maxSelectionsError":"The maximum number of selections allowed is ","pastDatesDisallowed":"Date must not be in the past.","dateLimited":"This date is unavailable.","dateInvalid":"This date is not valid. The date format is {format}","dateInvalidSeparate":"This date is not valid. Enter a valid {element}.","ageVerificationError":"You must be older than {minAge} years old to submit this form.","multipleFileUploads_typeError":"{file} has invalid extension. Only {extensions} are allowed.","multipleFileUploads_sizeError":"{file} is too large, maximum file size is {sizeLimit}.","multipleFileUploads_minSizeError":"{file} is too small, minimum file size is {minSizeLimit}.","multipleFileUploads_emptyError":"{file} is empty, please select files again without it.","multipleFileUploads_uploadFailed":"File upload failed, please remove it and upload the file again.","multipleFileUploads_onLeave":"The files are being uploaded, if you leave now the upload will be cancelled.","multipleFileUploads_fileLimitError":"Only {fileLimit} file uploads allowed.","dragAndDropFilesHere_infoMessage":"Drag and drop files here","chooseAFile_infoMessage":"Choose a file","maxFileSize_infoMessage":"Max. file size","generalError":"There are errors on the form. Please fix them before continuing.","generalPageError":"There are errors on this page. Please fix them before continuing.","wordLimitError":"Too many words. The limit is","wordMinLimitError":"Too few words.  The minimum is","characterLimitError":"Too many Characters.  The limit is","characterMinLimitError":"Too few characters. The minimum is","ccInvalidNumber":"Credit Card Number is invalid.","ccInvalidCVC":"CVC number is invalid.","ccInvalidExpireDate":"Expire date is invalid.","ccInvalidExpireMonth":"Expiration month is invalid.","ccInvalidExpireYear":"Expiration year is invalid.","ccMissingDetails":"Please fill up the credit card details.","ccMissingProduct":"Please select at least one product.","ccMissingDonation":"Please enter numeric values for donation amount.","disallowDecimals":"Please enter a whole number.","restrictedDomain":"This domain is not allowed","ccDonationMinLimitError":"Minimum amount is {minAmount} {currency}","requiredLegend":"All fields marked with * are required and must be filled.","geoPermissionTitle":"Permission Denied","geoPermissionDesc":"Check your browser's privacy settings.","geoNotAvailableTitle":"Position Unavailable","geoNotAvailableDesc":"Location provider not available. Please enter the address manually.","geoTimeoutTitle":"Timeout","geoTimeoutDesc":"Please check your internet connection and try again.","selectedTime":"Selected Time","formerSelectedTime":"Former Time","cancelAppointment":"Cancel Appointment","cancelSelection":"Cancel Selection","noSlotsAvailable":"No slots available","slotUnavailable":"{time} on {date} has been selected is unavailable. Please select another slot.","multipleError":"There are {count} errors on this page. Please correct them before moving on.","oneError":"There is {count} error on this page. Please correct it before moving on.","doneMessage":"Well done! All errors are fixed.","doneButton":"Done","reviewSubmitText":"Review and Submit","nextButtonText":"Next","prevButtonText":"Previous","seeErrorsButton":"See Errors","notEnoughStock":"Not enough stock for the current selection","notEnoughStock_remainedItems":"Not enough stock for the current selection ({count} items left)","soldOut":"Sold Out","justSoldOut":"Just Sold Out","selectionSoldOut":"Selection Sold Out","subProductItemsLeft":"({count} items left)","startButtonText":"START","submitButtonText":"Submit","submissionLimit":"Sorry! Only one entry is allowed. Multiple submissions are disabled for this form.","reviewBackText":"Back to Form","seeAllText":"See All","progressMiddleText":"of","fieldError":"field has an error.","error":"Error"};
-	JotForm.newPaymentUI = true;
-	JotForm.replaceTagTest = true;
-	JotForm.submitError="jumpToFirstError";
-	window.addEventListener('DOMContentLoaded',function(){window.brandingFooter.init({"formID":232857680521561,"campaign":"powered_by_jotform_le","isCardForm":false,"isLegacyForm":true})});	JotForm.isFullSource = true;
+<div class="card flex justify-content-center" style="float: right;">
+  <span class="p-buttonset" style="float: right;">
+      <button pButton pRipple label="Save" icon="pi pi-check"></button>
+      <button pButton pRipple label="Delete" icon="pi pi-trash"></button>
+      <button pButton pRipple label="Cancel" icon="pi pi-times"></button>
+  </span>
+</div>
+<div class="container-fluid">
 
-	JotForm.init(function(){
-	/*INIT-START*/
-if (window.JotForm && JotForm.accessible) $('input_21').setAttribute('tabindex',0);
-if (window.JotForm && JotForm.accessible) $('input_18').setAttribute('tabindex',0);
 
- JotForm.calendarMonths = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
- if (!JotForm.calenderViewMonths) JotForm.calenderViewMonths = {};  JotForm.calenderViewMonths[14] = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
- if (!JotForm.calenderViewDays) JotForm.calenderViewDays = {};  JotForm.calenderViewDays[14] = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
- JotForm.calendarDays = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
- JotForm.calendarOther = {"today":"Aujourd'hui"};
- var languageOptions = document.querySelectorAll('#langList li');
- for(var langIndex = 0; langIndex < languageOptions.length; langIndex++) {
-   languageOptions[langIndex].on('click', function(e) { setTimeout(function(){ JotForm.setCalendar("14", false, {"days":{"monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":true,"sunday":true},"future":true,"past":true,"custom":false,"ranges":false,"start":"","end":"","countSelectedDaysOnly":false}); }, 0); });
- }
- JotForm.onTranslationsFetch(function() { JotForm.setCalendar("14", false, {"days":{"monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":true,"sunday":true},"future":true,"past":true,"custom":false,"ranges":false,"start":"","end":"","countSelectedDaysOnly":false}); });
-      setTimeout(function() {
-          JotForm.initMultipleUploads();
-      }, 2);
-	/*INIT-END*/
-	});
 
-   setTimeout(function() {
-JotForm.paymentExtrasOnTheFly([null,null,null,null,null,null,null,{"name":"7","qid":"7","text":"Submit Form","type":"control_button"},null,null,{"name":"name","qid":"10","text":"Name","type":"control_fullname"},null,null,{"name":"clickTo","qid":"13","text":"Certification","type":"control_head"},{"description":"","name":"date","qid":"14","text":"Date ","type":"control_datetime"},{"description":"","name":"provider","qid":"15","subLabel":"","text":"Provider","type":"control_dropdown"},null,null,{"description":"","name":"saisissezUne19","qid":"18","subLabel":"","text":"Certification Title","type":"control_textbox"},{"description":"","name":"certification","qid":"19","subLabel":"","text":"certification","type":"control_fileupload"},null,{"description":"","name":"others","qid":"21","subLabel":"","text":"Others","type":"control_textbox"}]);}, 20);
-</script>
-<link type="text/css" rel="stylesheet" href="https://cdn01.jotfor.ms/themes/CSS/form-common.css?v=9b5ac39
-"/>
-<style type="text/css">@media print{*{-webkit-print-color-adjust: exact !important;color-adjust: exact !important;}.form-section{display:inline!important}.form-pagebreak{display:none!important}.form-section-closed{height:auto!important}.page-section{position:initial!important}}</style>
-<link type="text/css" rel="stylesheet" href="https://cdn02.jotfor.ms/themes/CSS/5e6b428acc8c4e222d1beb91.css?v=3.3.48100&themeRevisionID=5f30e2a790832f3e96009402"/>
-<link type="text/css" rel="stylesheet" href="https://cdn03.jotfor.ms/css/styles/payment/payment_styles.css?3.3.48100" />
-<link type="text/css" rel="stylesheet" href="https://cdn01.jotfor.ms/css/styles/payment/payment_feature.css?3.3.48100" />
-<link type="text/css" rel="stylesheet" href="https://cdn02.jotfor.ms/stylebuilder/donationBox.css?v=3.3.48100">
-<style type="text/css" id="form-designer-style">
-    /* Injected CSS Code */
-.form-label.form-label-auto {
+    <p-table [value]="loadedCert">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>optainedAt</th>
+          <th>Title</th>
+          <th>provider</th>
 
-        display: inline-block;
-        float: left;
-        text-align: left;
 
-      }
-    /* Injected CSS Code */
-</style>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-loadedCert>
+        <tr>
+          <td>{{ loadedCert.optainedAt  | date:'dd/MM/yyyy' }}</td>
+          <td>{{ loadedCert.Title }}</td>
+          <td>{{ loadedCert.provider }}</td>
 
-<form class="jotform-form" onsubmit="return typeof testSubmitFunction !== 'undefined' && testSubmitFunction();" action="https://submit.jotform.com/submit/232857680521561" method="post" enctype="multipart/form-data" name="form_232857680521561" id="232857680521561" accept-charset="utf-8" autocomplete="on"><input type="hidden" name="formID" value="232857680521561" /><input type="hidden" id="JWTContainer" value="" /><input type="hidden" id="cardinalOrderNumber" value="" /><input type="hidden" id="jsExecutionTracker" name="jsExecutionTracker" value="build-date-1701116211236" /><input type="hidden" id="submitSource" name="submitSource" value="unknown" /><input type="hidden" id="buildDate" name="buildDate" value="1701116211236" />
-  <div role="main" class="form-all">
-    <ul class="form-section page-section">
-      <li id="cid_13" class="form-input-wide" data-type="control_head">
-        <div class="form-header-group  header-large">
-          <div class="header-text httac htvam">
-            <h1 id="header_13" class="form-header" data-component="header">request new certification</h1>
-          </div>
-        </div>
-      </li>
-      <li class="form-line" data-type="control_fullname" id="id_10"><label class="form-label form-label-left form-label-auto" id="label_10" for="first_10" aria-hidden="false" > Name </label>
-        <div id="cid_10" class="form-input" data-layout="full">
-          <div data-wrapper-react="true">
-            <span class="form-sub-label-container" style="vertical-align:top" data-input-type="first">
-              <input type="text" id="first_10" value={{this.student.firstName}} name="q10_name[first]" [(ngModel)]="this.student.firstName" class="form-textbox"  size="10" data-component="first" aria-labelledby="label_10 sublabel_10_first" value="" />
-            <label class="form-sub-label" for="first_10" id="sublabel_10_first"  style="min-height:13px" aria-hidden="false">First Name</label></span>
-            <span class="form-sub-label-container" style="vertical-align:top" data-input-type="last">
-              <input type="text" id="last_10" name="q10_name[last]" value={{this.student.lastName}} class="form-textbox"[(ngModel)]="this.student.lastName" size="15" data-component="last" aria-labelledby="label_10 sublabel_10_last" value="" />
-              <label class="form-sub-label" for="last_10" id="sublabel_10_last" style="min-height:13px" aria-hidden="false">Last Name</label>
-            </span></div>
-        </div>
-      </li>
-      <li class="form-line" data-type="control_dropdown" id="id_15"><label class="form-label form-label-left form-label-auto" id="label_15" for="input_15" aria-hidden="false"> Provider </label>
-        <div id="cid_15" class="form-input" data-layout="half"> <select class="form-dropdown" id="input_15" [(ngModel)]="this.cer.provider" name="q15_provider" style="width:310px" data-component="dropdown" aria-label="Provider">
-            <option value="">Veuillez sélectionner</option>
-            <option value="Linux professional Institute">Linux professional Institute</option>
-            <option value="The Linux Foundation">The Linux Foundation</option>
-            <option value="REDHAT">REDHAT</option>
-            <option value="TEKONSULT">TEKONSULT</option>
-            <option value="Ec-COUNCIL">Ec-COUNCIL</option>
-            <option value="IIB COUNCIL">IIB COUNCIL</option>
-            <option value="offensive security">offensive security</option>
-            <option value="oracle">oracle</option>
-            <option value="cisco">cisco</option>
-            <option value="huawei">huawei</option>
-            <option value="google developers">google developers</option>
-            <option value="juniper">juniper</option>
-            <option value="microsoft its">microsoft its</option>
-            <option value="amazone">amazone</option>
-            <option value="python institute">python institute</option>
-            <option value="paio alto">paio alto</option>
-            <option value="fortinet">fortinet</option>
-            <option value="google">google</option>
-            <option value="ibm">ibm</option>
-          </select> </div>
-      </li>
-      <li class="form-line" data-type="control_textbox" id="id_21"><label class="form-label form-label-left form-label-auto" id="label_21" for="input_21" aria-hidden="false"> Others </label>
-        <div id="cid_21" class="form-input" data-layout="half"> <input type="text" id="input_21" name="q21_others" data-type="input-textbox" class="form-textbox" data-defaultvalue="" style="width:310px" size="310"  [(ngModel)]="this.cer.provider" data-component="textbox" aria-labelledby="label_21" value="" /> </div>
-      </li>
-      <li class="form-line" data-type="control_textbox" id="id_18"><label class="form-label form-label-left form-label-auto" id="label_18" for="input_18" aria-hidden="false"> Certification Title </label>
-        <div id="cid_18" class="form-input" data-layout="half">
-          <input type="text" [(ngModel)]="this.cer.Title" id="input_18" name="q18_saisissezUne19" data-type="input-textbox" class="form-textbox"   data-defaultvalue="" style="width:310px" size="310" data-component="textbox" aria-labelledby="label_18" value="" />
-        </div>
-      </li>
-      <li class="form-line" data-type="control_datetime" id="id_14"><label class="form-label form-label-left form-label-auto" id="label_14" for="lite_mode_14" aria-hidden="false"> Date </label>
-        <div id="cid_14" class="form-input" data-layout="half">
-          <div data-wrapper-react="true">
-            <div style="display:none"><span class="form-sub-label-container" style="vertical-align:top"><input type="tel" class="form-textbox validate[limitDate]" id="month_14" name="q14_date[month]" size="2" data-maxlength="2" data-age="" maxLength="2" value=""  [(ngModel)]="this.cer.optainedAt" autoComplete="off" aria-labelledby="label_14 sublabel_14_month" /><span class="date-separate" aria-hidden="true"> -</span><label class="form-sub-label" for="month_14" id="sublabel_14_month" style="min-height:13px" aria-hidden="false">Mois</label></span><span class="form-sub-label-container" style="vertical-align:top"><input type="tel" class="form-textbox validate[limitDate]" id="day_14" name="q14_date[day]" size="2" data-maxlength="2" data-age="" maxLength="2" value="" autoComplete="off" aria-labelledby="label_14 sublabel_14_day" /><span class="date-separate" aria-hidden="true"> -</span><label class="form-sub-label" for="day_14" id="sublabel_14_day" style="min-height:13px" aria-hidden="false">Jour</label></span><span class="form-sub-label-container" style="vertical-align:top"><input type="tel" class="form-textbox validate[limitDate]" id="year_14" name="q14_date[year]" size="4" data-maxlength="4" data-age="" maxLength="4" value="" autoComplete="off" aria-labelledby="label_14 sublabel_14_year" /><label class="form-sub-label" for="year_14" id="sublabel_14_year" style="min-height:13px" aria-hidden="false">Année</label></span></div><span class="form-sub-label-container" style="vertical-align:top"><input type="text" class="form-textbox validate[limitDate, validateLiteDate]" id="lite_mode_14" size="12" data-maxlength="12" maxLength="12" data-age="" value="" data-format="mmddyyyy" data-seperator="-" placeholder="MM-DD-YYYY" data-placeholder="MM-DD-YYYY" autoComplete="off" aria-labelledby="label_14 sublabel_14_litemode" /><img class=" newDefaultTheme-dateIcon icon-liteMode" alt="Pick a Date" id="input_14_pick" src="https://cdn.jotfor.ms/images/calendar.png" data-component="datetime" aria-hidden="true" data-allow-time="No" data-version="v2" /><label class="form-sub-label" for="lite_mode_14" id="sublabel_14_litemode" style="min-height:13px" aria-hidden="false">Date</label></span>
-          </div>
-        </div>
-      </li>
-      <li class="form-line" data-type="control_fileupload" id="id_19"><label class="form-label form-label-left form-label-auto" id="label_19" for="input_19" aria-hidden="false"> certification </label>
-        <div id="cid_19" class="form-input" data-layout="full">
-          <div class="jfQuestion-fields" data-wrapper-react="true">
-            <div class="jfField isFilled">
-              <div class="jfUpload-wrapper">
-                <div class="jfUpload-container">
-                  <div class="jfUpload-button-container">
-                    <div class="jfUpload-button"  [(ngModel)]="this.cer.file"  aria-hidden="true" tabindex="0" style="display:none" data-version="v2">Parcourir les fichiers<div class="jfUpload-heading forDesktop">Drag and drop files here</div>
-                      <div class="jfUpload-heading forMobile">Choose a file</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="jfUpload-files-container">
-                  <div class="validate[multipleUpload]"><input type="file" id="input_19" name="q19_certification[]" multiple="" class="form-upload-multiple" data-imagevalidate="yes" data-file-accept="pdf, doc, docx, xls, xlsx, csv, txt, rtf, html, zip, mp3, wma, mpg, flv, avi, jpg, jpeg, png, gif" data-file-maxsize="10854" data-file-minsize="0" data-file-limit="" data-component="fileupload" aria-label="Parcourir les fichiers" /></div>
-                </div>
-              </div>
-              <div data-wrapper-react="true"></div>
-            </div><span style="display:none" class="cancelText">Cancel</span><span style="display:none" class="ofText">of</span>
-          </div>
-        </div>
-      </li>
-      <li class="form-line" data-type="control_button" id="id_7">
-        <div id="cid_7" class="form-input-wide" data-layout="full">
-          <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField"><button id="input_7" type="submit" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content=""  (click)="createCert()">Submit Form</button></div>
-        </div>
-      </li>
-      <li style="display:none">Should be Empty: <input type="text" name="website" value="" /></li>
-    </ul>
-  </div>
-  <script>
-    JotForm.showJotFormPowered = "new_footer";
-  </script>
-  <script>
-    JotForm.poweredByText = "Powered by Jotform";
-  </script><input type="hidden" class="simple_spc" id="simple_spc" name="simple_spc" value="232857680521561" />
-  <script type="text/javascript">
-    var all_spc = document.querySelectorAll("form[id='232857680521561'] .si" + "mple" + "_spc");
-    for (var i = 0; i < all_spc.length; i++)
-    {
-      all_spc[i].value = "232857680521561-232857680521561";
-    }
-  </script>
-</form><script type="text/javascript">JotForm.ownerView=true;</script><script src="https://cdn.jotfor.ms//js/vendor/smoothscroll.min.js?v=3.3.48100"></script>
-<script src="https://cdn.jotfor.ms//js/errorNavigation.js?v=3.3.48100"></script>
-<script type="text/javascript">JotForm.isNewSACL=true;</script>
-<app-footer></app-footer>
+        </tr>
+      </ng-template>
+    </p-table>
+</div>
+

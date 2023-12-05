@@ -24,6 +24,7 @@
     "angular-bootstrap-md": "^15.0.0",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.0",
+    "express": "^4.18.2",
     "font-awesome": "^4.7.0",
     "jquery": "^3.7.1",
     "jquery-ui": "^1.13.2",
@@ -40,6 +41,7 @@
     "survey-angular": "^1.9.112",
     "survey-angular-ui": "^1.9.112",
     "survey-core": "^1.9.112",
+    "survey-creator-angular": "^1.9.119",
     "survey-pdf": "^1.9.12",
     "toast": "^0.5.4",
     "tslib": "^2.3.0",
@@ -56,6 +58,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "survey-creator-core": "^1.9.119",
     "typescript": "~5.1.3"
   }
 }

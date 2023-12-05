@@ -23,20 +23,20 @@ export class MenuBarComponent implements OnInit {
       {
         label: 'Certification',
         icon: 'pi pi-fw pi-pencil',
-        routerLink:['/certif']
+        routerLink:['/cert']
 
 
       },
       {
         label: 'Complaints',
         icon: 'pi pi-fw pi-user',
-        routerLink:['/reclamation']
+        routerLink:['/mycomp']
 
       },
       {
         label: 'Requests',
         icon: 'pi pi-fw pi-user',
-        routerLink:['/req']
+        routerLink:['/myreq']
 
       },
       {

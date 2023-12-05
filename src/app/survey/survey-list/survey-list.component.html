@@ -1,0 +1,16 @@
+<!-- survey.component.html -->
+
+<div *ngIf="surveys && surveys.length > 0">
+  <h2>Available Surveys</h2>
+  <ul>
+    <li *ngFor="let survey of surveys">
+      <button [routerLink]="['/survey', survey.filename]">
+        {{ survey.filename }} - Created at: {{ survey.createdAt | date }}
+        <!-- Display other survey details as needed -->
+      </button>
+    </li>
+  </ul>
+</div>
+<div *ngIf="!surveys || surveys.length === 0">
+  <p>No surveys available.</p>
+</div>

@@ -28,13 +28,23 @@
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/survey-core/defaultV2.min.css",
-              "node_modules/survey-creator-core/survey-creator-core.min.css"
+              "node_modules/survey-creator-core/survey-creator-core.min.css",
+              "src/assets/css/styles.min.css" ,
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+               "node_modules/primeng/resources/primeng.min.css"
+
 
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/js/sidebarmenu.js",
+              "src/assets/js/app.min.js",
+              "node_modules/apexcharts/dist/apexcharts.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+
+
 
             ]
           },

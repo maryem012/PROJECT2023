@@ -1,16 +1,27 @@
 <!-- survey.component.html -->
-
+<app-header></app-header>
+<app-menu-bar></app-menu-bar>
 <div *ngIf="surveys && surveys.length > 0">
-  <h2>Available Surveys</h2>
-  <ul>
-    <li *ngFor="let survey of surveys">
-      <button [routerLink]="['/survey', survey.filename]">
-        {{ survey.filename }} - Created at: {{ survey.createdAt | date }}
-        <!-- Display other survey details as needed -->
-      </button>
-    </li>
-  </ul>
+  <h2 style="text-align: center;" >Availabe surveys</h2>
+
+<div class="grid">
+  <div class="col-6 md:col-8 lg:col-6" *ngFor="let survey of surveys" style="padding: 30px;">
+    <div class="surface-card shadow-2 p-3 border-round" [routerLink]="['/survey', survey.filename]">
+        <div class="flex justify-content-between mb-3">
+            <div>
+                <span class="block text-900 font-medium mb-4 colorize"> {{ survey.filename.substring(0, survey.filename.indexOf('.')) }}
+              </span>
+                <div class="text-900 font-medium text-xl">{{ survey.createdAt | date }}</div>
+            </div>
+            <div class="flex align-items-center justify-content-center bg-purple-100 border-round" style="width:2.5rem;height:2.5rem">
+                <i class="pi pi-comment text-purple-500 text-xl"></i>
+            </div>
+        </div>
+
+    </div>
+</div>
 </div>
 <div *ngIf="!surveys || surveys.length === 0">
   <p>No surveys available.</p>
+</div>
 </div>

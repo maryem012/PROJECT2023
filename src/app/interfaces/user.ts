@@ -8,5 +8,6 @@ export interface User {
   password: string;
   phone: number;
   Role: string
+  department?:string
 
 }

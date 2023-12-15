@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { SurveyService } from 'src/app/services/survey.service';
 
@@ -13,11 +13,19 @@ interface CustomFile {
   templateUrl: './survey-management.component.html',
   styleUrls: ['./survey-management.component.css']
 })
-export class SurveyManagementComponent {
+export class SurveyManagementComponent implements OnInit {
   uploadedFiles: CustomFile[] = [];
+admin:any
+surveys: any;
 
-  constructor(private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService) {}
+  constructor(private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService) {}
 
+
+  ngOnInit(): void {
+    this.admin = localStorage.getItem('user');
+    this.admin = JSON.parse(this.admin);
+  this.fetchSurveys();
+  }
   onUpload(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
@@ -46,5 +54,18 @@ export class SurveyManagementComponent {
           life: 3000,
         });
   }});
+  }
+  fetchSurveys(): void {
+    this.surveyService.getSurveys()
+      .subscribe(
+        (data: any) => {
+          this.surveys = data;
+          // Log the fetched surveys
+          console.log(this.surveys);
+        },
+        error => {
+          console.error('Error fetching surveys:', error);
+        }
+      );
   }
 }

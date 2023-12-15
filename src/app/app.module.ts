@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';  // Import ReactiveFormsMo
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -15,7 +14,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { BadgeModule } from 'primeng/badge';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { CalendarModule } from 'primeng/calendar';
@@ -29,7 +27,6 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DataViewModule } from 'primeng/dataview';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
-import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DockModule } from 'primeng/dock';
 import { DragDropModule } from 'primeng/dragdrop';
@@ -115,6 +112,13 @@ import { SurveyCreatorComponent } from './survey-creator/survey-creator.componen
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import { SurveyManagementComponent } from './admin-panel/survey-management/survey-management.component';
 import { SurveyListComponent } from './survey/survey-list/survey-list.component';
+import { NgApexchartsModule } from "ng-apexcharts";
+import { RequestManagementComponent } from './admin-panel/request-management/request-management.component';
+import { ComplaintManagementComponent } from './admin-panel/complaint-management/complaint-management.component';
+import { DashboardComponent } from './admin-panel/dashboard/dashboard.component';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -135,10 +139,14 @@ import { SurveyListComponent } from './survey/survey-list/survey-list.component'
     AddCertifComponent,
     ListComplaintComponent,
     SurveyCreatorComponent,
-    SurveyManagementComponent,
     SurveyListComponent,
+    RequestManagementComponent,
+    ComplaintManagementComponent,
+    DashboardComponent,
+    SurveyManagementComponent
   ],
   imports: [
+    TableModule,
     HttpClientModule,
     TabMenuModule,
     MenuModule,
@@ -168,9 +176,10 @@ import { SurveyListComponent } from './survey/survey-list/survey-list.component'
 ConfirmDialogModule,
 MessagesModule,
 FileUploadModule,
-TableModule,
 TagModule,
+DialogModule,
 SurveyCreatorModule,
+NgApexchartsModule
   ],
   providers: [UserService, MessageService, ConfirmationService, DatePipe,
     ],

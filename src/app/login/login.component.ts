@@ -18,7 +18,8 @@ export class LoginComponent implements OnInit {
     email: '',
     password: '',
     phone: 0,
-    Role: ''
+    Role: '',
+    department:''
   }
 constructor(
   private authentificationService:AuthService,

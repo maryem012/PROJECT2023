@@ -14,6 +14,7 @@ export class ListComplaintComponent {
   constructor(private certificationService:CertificationService,  private requestService:RequestService,private messageService:MessageService,private complaintService:ComplaintsService){}
   student:any;
   loadedCert:any
+  visible: boolean = false;
 
   complaint:complaint={
     studentId: '',
@@ -40,6 +41,9 @@ export class ListComplaintComponent {
 
   }
 
+  showDialog() {
+      this.visible = true;
+  }
 
     loadComplaints(){
    this.complaintService.getComplaints().subscribe(res=>{

@@ -34,56 +34,17 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
-import { GalleriaModule } from 'primeng/galleria';
-import { InplaceModule } from 'primeng/inplace';
-import { InputMaskModule } from 'primeng/inputmask';
-import { InputSwitchModule } from 'primeng/inputswitch';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ImageModule } from 'primeng/image';
-import { KnobModule } from 'primeng/knob';
-import { ListboxModule } from 'primeng/listbox';
+
 import { MegaMenuModule } from 'primeng/megamenu';
 import { MenuModule } from 'primeng/menu';
 import { MenubarModule } from 'primeng/menubar';
-import { MessageModule } from 'primeng/message';
-import { MessagesModule } from 'primeng/messages';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { OrganizationChartModule } from 'primeng/organizationchart';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { PaginatorModule } from 'primeng/paginator';
-import { PanelModule } from 'primeng/panel';
-import { PanelMenuModule } from 'primeng/panelmenu';
-import { PasswordModule } from 'primeng/password';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { RadioButtonModule } from 'primeng/radiobutton';
+
 import { RatingModule } from 'primeng/rating';
-import { ScrollerModule } from 'primeng/scroller';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { ScrollTopModule } from 'primeng/scrolltop';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { SidebarModule } from 'primeng/sidebar';
-import { SkeletonModule } from 'primeng/skeleton';
-import { SlideMenuModule } from 'primeng/slidemenu';
-import { SliderModule } from 'primeng/slider';
-import { SpeedDialModule } from 'primeng/speeddial';
-import { SpinnerModule } from 'primeng/spinner';
-import { SplitButtonModule } from 'primeng/splitbutton';
+
 import { SplitterModule } from 'primeng/splitter';
-import { StepsModule } from 'primeng/steps';
 import { TabMenuModule } from 'primeng/tabmenu';
-import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
-import { TerminalModule } from 'primeng/terminal';
-import { TieredMenuModule } from 'primeng/tieredmenu';
-import { TimelineModule } from 'primeng/timeline';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { TooltipModule } from 'primeng/tooltip';
-import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
-import { TreeModule } from 'primeng/tree';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { TreeTableModule } from 'primeng/treetable';
+
 import { AnimateModule } from 'primeng/animate';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -98,10 +59,11 @@ import { SideBarComponent } from './side-bar/side-bar.component';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import {NgbCollapseModule} from '@ng-bootstrap/ng-bootstrap';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
-import {StyleClassModule} from 'primeng/styleclass';
-import { PickListModule } from 'primeng/picklist';
+
 import { ListresquestComponent } from './demands/listresquest/listresquest.component';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import {StyleClassModule} from 'primeng/styleclass';
+import { PickListModule } from 'primeng/picklist';
 import { UserService } from './services/user.service';
 import { StudentManagementComponent } from './admin-panel/student-management/student-management.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -116,9 +78,10 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { RequestManagementComponent } from './admin-panel/request-management/request-management.component';
 import { ComplaintManagementComponent } from './admin-panel/complaint-management/complaint-management.component';
 import { DashboardComponent } from './admin-panel/dashboard/dashboard.component';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { MessagesModule } from 'primeng/messages';
 
 @NgModule({
   declarations: [
@@ -172,7 +135,7 @@ import { TableModule } from 'primeng/table';
     FieldsetModule,
     VirtualScrollerModule,
     ToastModule,
-    MessageModule,
+    MessagesModule,
 ConfirmDialogModule,
 MessagesModule,
 FileUploadModule,

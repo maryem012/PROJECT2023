@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PrimeIcons, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
+import {  MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { User } from '../interfaces/user';
 import { AuthService } from '../services/auth.service';
 

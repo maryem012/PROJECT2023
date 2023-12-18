@@ -16,6 +16,7 @@ import { SurveyListComponent } from './survey/survey-list/survey-list.component'
 import { RequestManagementComponent } from './admin-panel/request-management/request-management.component';
 import { StudentManagementComponent } from './admin-panel/student-management/student-management.component';
 import { ComplaintManagementComponent } from './admin-panel/complaint-management/complaint-management.component';
+import { AppLayoutComponent } from './admin-panel/layout/app.layout.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,9 +29,9 @@ const routes: Routes = [
   { path: 'cert', component: CertificationComponent },
   { path: 'surveym', component: SurveyManagementComponent },
   { path: 'surveylist', component: SurveyListComponent },
-  { path: 'admin', component: AdminPanelComponent },
+  { path: 'admin', component: AppLayoutComponent },
   { path: 'addNew', component: AddCertifComponent },
-  { path: 'sur', component: SurveyCreatorComponent },
+  { path: '#/admin/surveyCreator', component: SurveyCreatorComponent },
   { path: 'admin/request_management', component: RequestManagementComponent },
   { path: 'admin/student_management', component: StudentManagementComponent },
   { path: 'admin/survey_management', component: SurveyManagementComponent },

@@ -42,7 +42,7 @@ export class MenuBarComponent implements OnInit {
       {
         label: 'survey',
         icon: 'pi pi-fw pi-user',
-        routerLink:['/survey']
+        routerLink:['/surveylist']
 
       },
 

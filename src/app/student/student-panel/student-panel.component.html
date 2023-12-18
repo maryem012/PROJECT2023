@@ -1,7 +1,10 @@
+<div class="layout-wrapper">
 <app-header></app-header>
-<app-menu-bar></app-menu-bar>
+  
+  <div class="layout-main-container">
+      <div class="layout-main">
+<div class="container-fluid">
 
-<div class="container-fluid"></div>
 <div class="row">
 <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
   <div class="grid">
@@ -78,7 +81,7 @@
           </ng-template>
           <ng-template pTemplate="footer" >
 
-            <p-button label="See more" icon="pi pi-check" [routerLink]="['/mycomp']"></p-button>
+            <p-button class="p-6 " label="See more" icon="pi pi-check" [routerLink]="['/mycomp']"></p-button>
 
             <p-button label="Add " icon="pi pi-plus"[routerLink]="['/reclamation']"  ></p-button>
 
@@ -114,7 +117,7 @@
           </ng-template>
           <p></p>
           <ng-template pTemplate="footer">
-            <p-button label="See more" icon="pi pi-check"[routerLink]="['/myreq']"></p-button>
+            <p-button class="p-6 " label="See more" icon="pi pi-check"[routerLink]="['/myreq']"></p-button>
             <p-button label="Add " icon="pi pi-plus"  [routerLink]="['/req']"></p-button>
 
           </ng-template>
@@ -149,8 +152,8 @@
           </ng-template>
           <p></p>
           <ng-template pTemplate="footer" >
-            <p-button label="See more" icon="pi pi-check" [routerLink]="['/cert']"></p-button>
-            <p-button label="Add " icon="pi pi-plus" [routerLink]="['/addNew']"></p-button>
+            <p-button class="p-6 " label="See more" icon="pi pi-check" [routerLink]="['/cert']"></p-button>
+            <p-button   label="Add " icon="pi pi-plus" [routerLink]="['/addNew']"></p-button>
 
           </ng-template>
           <p-table [value]="loadedCert.slice(0, 4)">
@@ -172,6 +175,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <div></div>

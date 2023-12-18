@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { SurveyService } from 'src/app/services/survey.service';
+import { LayoutService } from '../layout/service/app.layout.service';
 
 interface CustomFile {
   name: string;
@@ -17,8 +18,10 @@ export class SurveyManagementComponent implements OnInit {
   uploadedFiles: CustomFile[] = [];
 admin:any
 surveys: any;
+visible: boolean = false;
 
-  constructor(private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService) {}
+  constructor(    private layoutService: LayoutService,
+  private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService) {}
 
 
   ngOnInit(): void {
@@ -31,6 +34,7 @@ surveys: any;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       this.uploadFile(file);
+
     }
   }
 
@@ -38,6 +42,7 @@ surveys: any;
     this.fileUploadService.uploadFile(file).subscribe({
       next: (response: any) => {
         console.log('File uploaded successfully:', response);
+        this.fetchSurveys();
         this.messageService.add({
           severity: 'success',
           summary: 'Successful',
@@ -68,4 +73,20 @@ surveys: any;
         }
       );
   }
+  get containerClass() {
+    return {
+      'layout-theme-light': this.layoutService.config.colorScheme === 'light',
+      'layout-theme-dark': this.layoutService.config.colorScheme === 'dark',
+      'layout-overlay': this.layoutService.config.menuMode === 'overlay',
+      'layout-static': this.layoutService.config.menuMode === 'static',
+      'layout-static-inactive': this.layoutService.state.staticMenuDesktopInactive && this.layoutService.config.menuMode === 'static',
+      'layout-overlay-active': this.layoutService.state.overlayMenuActive,
+      'layout-mobile-active': this.layoutService.state.staticMenuMobileActive,
+      'p-input-filled': this.layoutService.config.inputStyle === 'filled',
+      'p-ripple-disabled': !this.layoutService.config.ripple
+    }
+}
+showDialog() {
+  this.visible = true; // Show the dialog
+}
 }

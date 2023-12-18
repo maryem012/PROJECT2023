@@ -1,230 +1,26 @@
-  <head id="j_idt2">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TEK-UP » Accueil</title>
-  </head>
-  <body
-    class="edx header-fixed header-mobile-fixed subheader-disabled menu-top aside-minimize-hoverable aside-dark49d8 with-right-bar"
-  >
-    <div
-      id="kt_header_mobile"
-      class="header-mobile align-items-center header-mobile-fixed"
-    >
-      <a href="/portal/home.faces"
-        ><span class="home-logo h-100"
-          ><p>
-            <img
-              src="https://edx.tek-up.de/media/image?i=202306-1/14sWlJDvLh9O7HRRExEYpnIrQeM0nZm-UFtoBBGY.png"
-              height="60"
-            /></p></span
-      ></a>
-      <div class="d-flex align-items-center">
-        <div class="btn-group" role="group">
-          <form
-            id="formNotif_mobile"
-            name="formNotif_mobile"
-            method="post"
-            action="/portal/home.faces"
-            enctype="application/x-www-form-urlencoded"
-          >
-            <input
-              type="hidden"
-              name="formNotif_mobile"
-              value="formNotif_mobile"
-            />
+<div class="layout-topbar">
+  <a class="layout-topbar-logo" routerLink="">
+    <img src="../assets/tekup.png" width="170" alt="" />
+  </a>
 
-            <div class="dropdown">
-              <div
-                class="topbar-item"
-                data-toggle="dropdown"
-                data-offset="10px,0px"
-                aria-expanded="false"
-              >
-                <div
-                  class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1 pulse pulse-primary"
-                  title="Notifications"
-                >
-                  <span class="svg-icon svg-icon-xl svg-icon-warning">
-                    <svg
-                      width="24px"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      version="1.1"
-                    >
-                      <g
-                        stroke="none"
-                        stroke-width="1"
-                        fill="none"
-                        fill-rule="evenodd"
-                      >
-                        <path
-                          d="M17,12 L18.5,12 C19.3284271,12 20,12.6715729 20,13.5 C20,14.3284271 19.3284271,15 18.5,15 L5.5,15 C4.67157288,15 4,14.3284271 4,13.5 C4,12.6715729 4.67157288,12 5.5,12 L7,12 L7.5582739,6.97553494 C7.80974924,4.71225688 9.72279394,3 12,3 C14.2772061,3 16.1902508,4.71225688 16.4417261,6.97553494 L17,12 Z"
-                          fill="#000000"
-                        ></path>
-                        <rect
-                          fill="#000000"
-                          opacity="0.3"
-                          x="10"
-                          y="16"
-                          width="4"
-                          height="4"
-                          rx="2"
-                        ></rect>
-                      </g>
-                    </svg>
-                  </span>
-                  <span id="notif-count_mobile" ></span>
-                </div>
-              </div>
-              <div
-                id="notifications-panel_mobile"
-                class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-xl"
+  <p-tabMenu [scrollable]="true" [model]="items" [activeItem]="activeItem" ></p-tabMenu>
 
-              >
-                <div
-                  class="d-flex flex-column py-9 bgi-size-cover bgi-no-repeat rounded-top"
-                  style="
-                    background-image: url(/javax.faces.resource/img/bg/bg-1.jpg.faces);
-                  "
-                >
-                  <h4 class="d-flex flex-center rounded-top">
-                    <span class="text-white">Notifications</span>
-                    <p-button icon="pi pi-bell"  severity="warning"></p-button>
+  <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+      <i class="pi pi-ellipsis-v"></i>
+  </button>
 
-                  </h4>
-                </div>
-                <div
-                  id="formNotif_mobile:app-notif-panel_mobile"
-                  class="ui-outputpanel ui-widget max-h-500px scroll-on-hover scroll-style-1 notif-panel"
-                >
-
-                  <div
-                    id="formNotif_mobile:j_idt64"
-                    class="ui-outputpanel ui-widget d-flex flex-center text-center text-dark-50 min-h-200px"
-                  >
-                    Liste vide !
-                    <br />Aucune notification non lue ou épinglée.
-                  </div>
-                </div>
-                <div class="d-flex flex-center py-7">
-                  <a
-                    id="formNotif_mobile:j_idt67"
-                    href="#"
-                    class="ui-commandlink ui-widget btn btn-light-primary font-weight-bold text-center"
-                    >Afficher tous</a
-                  >
-                </div>
-              </div>
-            </div>
-            <div id="formNotif_mobile:j_idt69" style="display: none"></div>
-            <input
-              type="hidden"
-              name="javax.faces.ViewState"
-              id="j_id1:javax.faces.ViewState:3"
-              value="-6219607532633619227:7343374085032711086"
-              autocomplete="off"
-            />
-          </form>
-        </div>
-        <form
-          id="discussionFormMobile"
-          name="discussionFormMobile"
-          method="post"
-          action="/portal/home.faces"
-          enctype="application/x-www-form-urlencoded"
-        >
-        <span>
-        </span>
-          <input
-            type="hidden"
-            name="discussionFormMobile"
-            value="discussionFormMobile"
-
-          />
-          <a
-            id="discussionFormMobile:j_idt72"
-            href="#"
-            class="ui-commandlink ui-widget btn btn-icon btn-clean btn-lg mr-1 pulse pulse-primary"
-            data-toggle="tooltip"
-            data-placement="bottom"
-            data-original-title="Messages"
-          >
-            <span class="svg-icon svg-icon-xl svg-icon-success">
-
-              <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                <g
-                  stroke="none"
-                  stroke-width="1"
-                  fill="none"
-                  fill-rule="evenodd"
-                >
-                  <rect x="0" y="0" width="24" height="24"></rect>
-                  <path
-                    d="M12.7037037,14 L15.6666667,10 L13.4444444,10 L13.4444444,6 L9,12 L11.2222222,12 L11.2222222,14 L6,14 C5.44771525,14 5,13.5522847 5,13 L5,3 C5,2.44771525 5.44771525,2 6,2 L18,2 C18.5522847,2 19,2.44771525 19,3 L19,13 C19,13.5522847 18.5522847,14 18,14 L12.7037037,14 Z"
-                    fill="#000000"
-                    opacity="0.3"
-                  ></path>
-                  <path
-                    d="M9.80428954,10.9142091 L9,12 L11.2222222,12 L11.2222222,16 L15.6666667,10 L15.4615385,10 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 L9.80428954,10.9142091 Z"
-                    fill="#000000"
-                  ></path>
-                </g>
-
-              </svg>
-
-            </span>
-            <div
-              id="discussionFormMobile:messagesCount"
-              class="ui-outputpanel ui-widget"
-              style="display: inline-block; height: 0; margin-left: 2px"
-            >
-              <div
-                id="discussionFormMobile:nbMessage"
-                class="ui-outputpanel ui-widget position-absolute label label-sm label-rounded label-danger d-none"
-                style="top: 0; right: 0"
-              >
-                0
-              </div>
-            </div></a
-          >
-          <div id="discussionFormMobile:j_idt75" style="display: none"></div>
-          <input
-            type="hidden"
-            name="javax.faces.ViewState"
-            id="j_id1:javax.faces.ViewState:4"
-            value="-6219607532633619227:7343374085032711086"
-            autocomplete="off"
-          />
-        </form>
-        <button class="btn p-0 burger-icon ml-4" id="kt_aside_mobile_toggle">
-          <span></span>
-        </button>
-        <button
-          class="btn btn-hover-text-primary p-0 ml-2"
-          id="kt_header_mobile_topbar_toggle"
-        >
-          <span class="svg-icon svg-icon-xl">
-            <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <polygon points="0 0 24 0 24 24 0 24"></polygon>
-                <path
-                  d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z"
-                  fill="#000000"
-                  fill-rule="nonzero"
-                  opacity="0.3"
-                ></path>
-                <path
-                  d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z"
-                  fill="#000000"
-                  fill-rule="nonzero"
-                ></path>
-              </g>
-            </svg>
-          </span>
-        </button>
-        {{student.firstName}} {{student.lastName}}
-
-      </div>
-    </div>
+  <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+      <button class="p-link layout-topbar-button">
+          <i class="pi pi-calendar"></i>
+          <span>Calendar</span>
+      </button>
+      <button class="p-link layout-topbar-button">
+          <i class="pi pi-user"></i>
+          <span>Profile</span>
+      </button>
+      <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
+          <i class="pi pi-cog"></i>
+          <span>Settings</span>
+      </button>
+  </div>
+</div>

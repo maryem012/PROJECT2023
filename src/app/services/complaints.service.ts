@@ -24,9 +24,9 @@ export class ComplaintsService {
     return this.http.post<complaint>(`${this.BASE_URL}/complaint/create`, complaint);
   }
 
-  deleteComplaint(id: string): Observable<complaint> {
-    console.log(id);
-    return this.http.delete<complaint>(`${this.BASE_URL}/complaint/${id}`);
+  deleteComplaint(_id: string): Observable<complaint> {
+    console.log(_id);
+    return this.http.delete<complaint>(`${this.BASE_URL}/complaint/${_id}`);
   }
 
   updateComplaint(body: any): Observable<complaint> {

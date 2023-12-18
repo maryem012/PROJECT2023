@@ -11,4 +11,6 @@ export interface Users extends Document {
     password: string;
     phone: number;
     role: Role;
+    department?:string
+
 }

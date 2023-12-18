@@ -1,0 +1,48 @@
+{
+ "title": "satisfaction",
+ "pages": [
+  {
+   "name": "Name",
+   "elements": [
+    {
+     "type": "text",
+     "name": "FirstName",
+     "title": "Enter your first name:"
+    },
+    {
+     "type": "text",
+     "name": "LastName",
+     "title": "Enter your last name:"
+    }
+   ]
+  },
+  {
+   "name": "page1",
+   "elements": [
+    {
+     "type": "text",
+     "name": "question1"
+    },
+    {
+     "type": "rating",
+     "name": "question2",
+     "title": "satisfaction",
+     "rateCount": 7,
+     "rateMax": 7
+    },
+    {
+     "type": "text",
+     "name": "question3"
+    },
+    {
+     "type": "boolean",
+     "name": "question4"
+    },
+    {
+     "type": "boolean",
+     "name": "question5"
+    }
+   ]
+  }
+ ]
+}

@@ -31,7 +31,7 @@ async getcertifications(@Res() res) {
 }
 @Get('/:id')
 @ApiOkResponse({ type: certificationDto })
-async getcertification(@Res() response, @Param('id') certificationId: string) {
+async getcertification(@Res() response, @Param('_id') certificationId: string) {
   try {
      const existingcertification = await
  this.certificationService.getcertification(certificationId);
@@ -43,7 +43,7 @@ async getcertification(@Res() response, @Param('id') certificationId: string) {
  }
 @UseInterceptors(MorganInterceptor('combined'))
 @Delete('/:_id')
-async deletecertification(@Res() res, @Param('id') certificationId: string)
+async deletecertification(@Res() res, @Param('_id') certificationId: string)
 {
   try {
     const deletedcertification = await this.certificationService.deletecertification(certificationId);
@@ -57,7 +57,7 @@ async deletecertification(@Res() res, @Param('id') certificationId: string)
 //@UseGuards(AuthGuard('Cardiologist'))
 @Put(':_id')
 @ApiCreatedResponse({ type: certificationDto })
-async updatecertification(@Res() response,@Param('id') certificationId: string,
+async updatecertification(@Res() response,@Param('_id') certificationId: string,
 @Body() certificationDto: certificationDto) {
   try {
    const existingPres = await this.certificationService.updatecertification(certificationId, certificationDto);

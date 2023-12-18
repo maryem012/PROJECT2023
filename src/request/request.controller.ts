@@ -31,7 +31,7 @@ async getrequests(@Res() res) {
 }
 @Get('/:id')
 @ApiOkResponse({ type: requestDto })
-async getrequest(@Res() response, @Param('id') requestId: string) {
+async getrequest(@Res() response, @Param('_id') requestId: string) {
   try {
      const existingrequest = await
  this.requestService.getRequest(requestId);
@@ -43,7 +43,7 @@ async getrequest(@Res() response, @Param('id') requestId: string) {
  }
 @UseInterceptors(MorganInterceptor('combined'))
 @Delete('/:_id')
-async deleteRequest(@Res() res, @Param('id') requestId: string)
+async deleteRequest(@Res() res, @Param('_id') requestId: string)
 {
   try {
     const deletedrequest = await this.requestService.deleteRequest(requestId);
@@ -57,7 +57,7 @@ async deleteRequest(@Res() res, @Param('id') requestId: string)
 //@UseGuards(AuthGuard('Cardiologist'))
 @Put(':_id')
 @ApiCreatedResponse({ type: requestDto })
-async updateRequest(@Res() response,@Param('id') requestId: string,
+async updateRequest(@Res() response,@Param('_id') requestId: string,
 @Body() requestDto: requestDto) {
   try {
    const existingPres = await this.requestService.updateRequest(requestId, requestDto);

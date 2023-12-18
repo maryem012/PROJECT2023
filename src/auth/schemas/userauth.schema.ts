@@ -29,10 +29,7 @@ export const UserauthSchema = new mongoose.Schema({
     type: String,
     //required: true
   },
-  job: {
-    type: String,
-    // required: true
-  },
+  
   birthdate: {
     type: Date,
   },
@@ -41,5 +38,7 @@ export const UserauthSchema = new mongoose.Schema({
     type: String,
     enum: Role
   },
+  department:String
+
 
 });

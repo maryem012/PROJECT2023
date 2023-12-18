@@ -21,5 +21,7 @@ export class UserDto {
    phone: number;
   @ApiProperty()
   readonly role: Role;
+  @ApiProperty()
+  department?:string
 
 }

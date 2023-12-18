@@ -12,6 +12,7 @@ export const UserSchema = new Schema({
   email: String,
   password: String,
   phone: Number,
+  department:String,
 
 
   role: {

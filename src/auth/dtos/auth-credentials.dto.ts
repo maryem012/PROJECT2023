@@ -27,6 +27,9 @@ export class AuthCredentialsDto {
   
   @ApiProperty()
   birthdate?: Date;
+  @ApiProperty()
+
+  department?:string
 
 
 

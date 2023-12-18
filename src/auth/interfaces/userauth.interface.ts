@@ -7,10 +7,10 @@ export interface Userauth extends Document {
    phone?: number;
    firstName?: string;
    lastName?: string;
-
+gender:string;
    birthdate?: Date;
   role: string;
- 
+ department?:string
   
 
 }

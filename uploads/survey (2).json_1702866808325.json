@@ -1,0 +1,23 @@
+{
+ "pages": [
+  {
+   "name": "Name",
+   "elements": [
+    {
+     "type": "text",
+     "name": "FirstName",
+     "title": "Enter your first name:"
+    },
+    {
+     "type": "text",
+     "name": "LastName",
+     "title": "Enter your last name:"
+    },
+    {
+     "type": "rating",
+     "name": "question1"
+    }
+   ]
+  }
+ ]
+}

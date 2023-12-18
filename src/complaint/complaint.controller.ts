@@ -32,7 +32,7 @@ async getcomplaints(@Res() res) {
 }
 @Get('/:id')
 @ApiOkResponse({ type: complaintDto })
-async getcomplaint(@Res() response, @Param('id') complaintId: string) {
+async getcomplaint(@Res() response, @Param('_id') complaintId: string) {
   try {
      const existingcomplaint = await
  this.complaintService.getcomplaint(complaintId);
@@ -44,7 +44,7 @@ async getcomplaint(@Res() response, @Param('id') complaintId: string) {
  }
 @UseInterceptors(MorganInterceptor('combined'))
 @Delete('/:_id')
-async deletecomplaint(@Res() res, @Param('id') complaintId: string)
+async deletecomplaint(@Res() res, @Param('_id') complaintId: string)
 {
   try {
     const deletedcomplaint = await this.complaintService.deletecomplaint(complaintId);
@@ -55,10 +55,9 @@ async deletecomplaint(@Res() res, @Param('id') complaintId: string)
     return res.status(err.status).json(err.res);
   }}
 
-//@UseGuards(AuthGuard('Cardiologist'))
 @Put(':_id')
 @ApiCreatedResponse({ type: complaintDto })
-async updatecomplaint(@Res() response,@Param('id') complaintId: string,
+async updatecomplaint(@Res() response,@Param('_id') complaintId: string,
 @Body() complaintDto: complaintDto) {
   try {
    const existingPres = await this.complaintService.updatecomplaint(complaintId, complaintDto);

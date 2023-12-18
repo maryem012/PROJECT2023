@@ -106,9 +106,8 @@ export class AuthService {
         lastName: user.lastName,
         gender: user.gender,
         birthdate: user.birthdate,
-      
-        phone: user.phone ,
-      
+      department:user.department,
+      phone:user.phone,
         role: user.role,
       });
       userData.save();
@@ -121,7 +120,8 @@ export class AuthService {
           firstName: userData.firstName,
           lastName: userData.lastName,
           birthdate: userData.birthdate,
-        
+          department:user.department,
+          gender:user.gender,
           phone: userData.phone,
           role: userData.role,
   
@@ -179,9 +179,16 @@ export class AuthService {
       }
   
       const userData = new this.authModel({
-        email:user.email,
+        email: user.email,
         password: user.password,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        gender: user.gender,
+        birthdate: user.birthdate,
+      department:user.department,
+      phone:user.phone,
         role: user.role,
+
       });
       userData.save();
   
@@ -190,8 +197,15 @@ export class AuthService {
         statusCode: HttpStatus.CREATED,
         data: {
           id: userData.id,
-          email:userData.email,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          birthdate: userData.birthdate,
+          department:user.department,
+          gender:user.gender,
+          phone: userData.phone,
           role: userData.role,
+  
   
         },
       });

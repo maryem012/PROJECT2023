@@ -14,8 +14,14 @@
      "title": "Enter your last name:"
     },
     {
-     "type": "rating",
-     "name": "question1"
+     "type": "text",
+     "name": "university",
+     "title": "university"
+    },
+    {
+     "type": "text",
+     "name": "classe",
+     "title": "classe"
     }
    ]
   }

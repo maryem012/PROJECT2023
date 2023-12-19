@@ -40781,12 +40781,13 @@ ul {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 11px;
+  grid-column-gap: 8px;
   grid-row-gap: 8px
 }
 
 .div1 {
-  grid-area: 1/1/5/4
+  grid-area: 1/1/5/4;
+
 }
 
 .div2 {

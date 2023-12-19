@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../admin-panel/layout/service/app.layout.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,7 +9,7 @@ import { LayoutService } from '../admin-panel/layout/service/app.layout.service'
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public layoutService: LayoutService) { }
+  constructor(public layoutService: LayoutService,private authservice:AuthService ) { }
   name = 'Angular';
   public isCollapsed = true;
   items!: MenuItem[] | undefined
@@ -55,8 +56,13 @@ export class HeaderComponent implements OnInit {
     this.activeItem = this.items[0];
 
   }
+
+  logOut() {
+    this.authservice.doLogout()
+
+    }
   }
-  
+
 
 
 

@@ -17,6 +17,7 @@ import { RequestManagementComponent } from './admin-panel/request-management/req
 import { StudentManagementComponent } from './admin-panel/student-management/student-management.component';
 import { ComplaintManagementComponent } from './admin-panel/complaint-management/complaint-management.component';
 import { AppLayoutComponent } from './admin-panel/layout/app.layout.component';
+import { SurveyResultsComponent } from './admin-panel/survey-management/survey-results/survey-results.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path: 'admin/student_management', component: StudentManagementComponent },
   { path: 'admin/survey_management', component: SurveyManagementComponent },
   { path: 'admin/complaint_management', component: ComplaintManagementComponent },
+  { path: 'admin/survey_management/Surveyresults/:filename', component: SurveyResultsComponent },
 
 
 

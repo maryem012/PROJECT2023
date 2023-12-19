@@ -85,6 +85,7 @@ import { MessagesModule } from 'primeng/messages';
 import { AppConfigModule } from './admin-panel/layout/config/config.module';
 import { AppLayoutModule } from './admin-panel/layout/app.layout.module';
 import { SidebarModule } from 'primeng/sidebar';
+import { SurveyResultsComponent } from './admin-panel/survey-management/survey-results/survey-results.component';
 
 @NgModule({
     declarations: [
@@ -104,7 +105,7 @@ import { SidebarModule } from 'primeng/sidebar';
         ListComplaintComponent,
         SurveyCreatorComponent,
         SurveyListComponent,
-       
+
 
     ],
     providers: [UserService, MessageService, ConfirmationService, DatePipe,

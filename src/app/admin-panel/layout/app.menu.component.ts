@@ -1,6 +1,7 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -10,7 +11,7 @@ export class AppMenuComponent implements OnInit {
 
     model: any[] = [];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService,private authservice:AuthService) { }
 
     ngOnInit() {
         this.model = [
@@ -35,8 +36,11 @@ export class AppMenuComponent implements OnInit {
               label: 'Auth',
               items: [
                   { label: 'Profile', icon: 'pi pi-fw pi-user-edit', routerLink: ['./authentication-login.html'] },
-                  { label: 'Logout', icon: 'pi pi-fw pi-sign-out', routerLink: ['./authentication-register.html'] }
+                  { label: 'Logout', icon: 'pi pi-fw pi-sign-out', routerLink: ['./logout'] , command: () => this.logOut() }
               ]
           }]}
-
+          logOut() {
+            this.authservice.doLogout()
+      
+            }
 }

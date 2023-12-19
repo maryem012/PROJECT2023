@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { SurveyService } from 'src/app/services/survey.service';
 import { LayoutService } from '../layout/service/app.layout.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface CustomFile {
   name: string;
@@ -19,16 +20,28 @@ export class SurveyManagementComponent implements OnInit {
 admin:any
 surveys: any;
 visible: boolean = false;
-
-  constructor(    private layoutService: LayoutService,
-  private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService) {}
+savedSurveyResults:any
+surveyResult:any
+surveyId: any;
+surveyFilename:any
+  constructor(private router: Router,private route: ActivatedRoute,    private layoutService: LayoutService,
+  private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService,private confirmationService:ConfirmationService) {}
 
 
   ngOnInit(): void {
+
     this.admin = localStorage.getItem('user');
     this.admin = JSON.parse(this.admin);
   this.fetchSurveys();
+  this.fetchSavedSurveyResults()
+  this.displaySurveyResults(this.surveyFilename);
+
   }
+  navigateToResultsPage(filename: string): void {
+    // Redirect to the results page with the filename as a parameter
+    this.router.navigate(['admin/survey_management/Surveyresults', filename]);
+  }
+
   onUpload(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
@@ -88,5 +101,69 @@ visible: boolean = false;
 }
 showDialog() {
   this.visible = true; // Show the dialog
+}
+confirmDelete(filename: string): void {
+  this.confirmationService.confirm({
+    message: 'Are you sure you want to delete this survey?',
+    accept: () => {
+      this.deleteFile(filename);
+      this.fetchSurveys();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'File successfully deleted',
+        life: 3000,
+      });
+
+    }
+  });
+}
+
+deleteFile(filename: string): void {
+  this.fileUploadService.deleteFile(filename).subscribe({
+    next: (response: any) => {
+      console.log('File deleted successfully:', response);
+      this.fetchSurveys(); // Refresh the list after deletion
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'File successfully deleted',
+        life: 3000,
+      });
+    },
+    error: (e: any) => {
+      console.error('Error deleting file:', e);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Failed to delete file, please try again',
+        life: 3000,
+      });
+    }
+  });
+}
+fetchSavedSurveyResults(): void {
+  this.surveyService.fetchSavedSurveyResults().subscribe(
+    (data: any[]) => {
+      this.savedSurveyResults = data;
+      console.log(this.savedSurveyResults)// Assign the fetched data to your component property
+    },
+    (error: any) => {
+      console.error('Error fetching saved survey results:', error);
+      // Handle error, show error message, etc.
+    }
+  );
+}
+displaySurveyResults(filename: string): void {
+  this.surveyService.getSurveyResultByFilename(filename).subscribe(
+    (data: any) => {
+      this.surveyResult = data;
+      console.log('Fetched Survey Result:', this.surveyResult);
+},
+    (error: any) => {
+      console.error('Error fetching survey result:', error);
+      // Handle error, show error message, etc.
+    }
+  );
 }
 }

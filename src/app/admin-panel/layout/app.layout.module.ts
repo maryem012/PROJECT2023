@@ -44,6 +44,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ChipModule } from 'primeng/chip';
 import { StudentManagementComponent } from '../student-management/student-management.component';
+import { SurveyResultsComponent } from '../survey-management/survey-results/survey-results.component';
+import { ChartModule } from 'primeng/chart';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
     declarations: [
@@ -59,6 +62,8 @@ import { StudentManagementComponent } from '../student-management/student-manage
         DashboardComponent,
         StudentManagementComponent,
         SurveyManagementComponent,
+        SurveyResultsComponent,
+
     ],
     imports: [
         BrowserModule,
@@ -94,8 +99,8 @@ import { StudentManagementComponent } from '../student-management/student-manage
         ButtonModule,
         DialogModule,
         ChipModule,
-        
-
+        ChartModule,
+        MultiSelectModule
     ],
     exports: [AppLayoutComponent],
     providers:  [MessageService, ConfirmationService]

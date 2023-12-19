@@ -1,0 +1,48 @@
+/* CSS styles for the chart container and items */
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px; /* Adjust the gap between charts */
+}
+
+.chart-item {
+  flex: 1 1 calc(33.33% - 20px); /* Adjust the width of each chart item */
+  max-width: calc(33.33% - 20px); /* Adjust the maximum width of each chart */
+}
+/* Add your custom styling here */
+#selectedQuestions {
+  /* Example styles */
+  border-radius: 5px;
+  border: 1.4px solid #1075da;
+  padding: 8px;
+  overflow: hidden;
+  font-size: medium;
+  color: black;
+}
+label{
+  font-size: medium;
+  color: grey;
+  font-weight: 300;
+}
+
+/* Optional: Style the selected options */
+#selectedQuestions option:checked {
+  background-color: #007bff;
+  color: #fff;
+}
+#typeselect{
+  width: 100%;
+  border-radius: 5px;
+  border: 1.4px solid #1075da;
+  padding: 8px;
+  font-size: medium;
+  padding-bottom: 10px;
+}
+
+/* Optional: Style the dropdown arrow */
+#selectedQuestions::-ms-expand {
+  display: none;
+}
+#button1{
+  width: 100%;
+}

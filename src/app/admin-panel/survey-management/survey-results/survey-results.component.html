@@ -1,0 +1,66 @@
+<div class="layout-wrapper" [ngClass]="containerClass">
+  <app-topbar></app-topbar>
+  <div class="layout-sidebar">
+      <app-sidebar></app-sidebar>
+  </div>
+  <div class="layout-main-container">
+      <div class="layout-main">
+        <div class="card">
+          <!-- Dynamic selection for multiple questions -->
+          <label for="selectedQuestions">Select Questions:</label>
+<select id="selectedQuestions" class="form-control" [(ngModel)]="selectedQuestions" multiple>
+  <option *ngFor="let question of questionsList" [value]="question">
+    {{ question }}
+  </option>
+</select>
+          <div>
+            <!-- Dropdown select for chart type -->
+            <label>Select Chart Type:</label>
+            <br>
+            <select id="typeselect" [(ngModel)]="selectedChartType" (change)="displayMultipleCharts()">
+              <option value="bar">Bar Chart</option>
+              <option value="pie">Pie Chart</option>
+              <option value="line">line Chart</option>
+              <option value="doughnut">doughnut Chart</option>
+
+              <!-- Add more chart types as needed -->
+            </select>
+          </div>
+          <!-- Button to display multiple charts -->
+          <div class="p-2  justify-content-center w-full">
+          <p-button
+          icon="pi pi-send"
+          (click)="displayMultipleCharts()"
+          label="Display Charts"
+          pAutoFocus
+          [autofocus]="true"
+        ></p-button>
+      </div>
+        </div>
+        <div class="card">
+        <div class="chart-container">
+          <div *ngFor="let chartData of multipleChartData">
+            <p-chart type="{{ chartData.datasets[0].type }}" [data]="chartData"></p-chart>
+          </div>
+        </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             </div>
+      <app-footer></app-footer>
+  </div>
+  <app-config></app-config>
+  <div class="layout-mask"></div>
+</div>

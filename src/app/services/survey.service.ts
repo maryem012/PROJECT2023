@@ -32,4 +32,13 @@ export class SurveyService {
   saveSurveyResults(dataToSave: any): Observable<any> {
     return this.http.post<any>('http://localhost:3000/survey/save-results', dataToSave);
   }
+  deleteFile(filename: string): Observable<any> {
+    return this.http.delete<any>(`http://localhost:3000/survey/${filename}`);
+  }
+  fetchSavedSurveyResults(): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3000/survey/savedresults`);
+  }
+  getSurveyResultByFilename(filename: string): Observable<any> {
+    return this.http.get<any[]>(`http://localhost:3000/survey/surveyresult/${filename}`);
+  }
 }

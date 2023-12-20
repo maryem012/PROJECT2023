@@ -12,7 +12,6 @@ import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
-import { BadgeModule } from 'primeng/badge';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CardModule } from 'primeng/card';
 
@@ -86,6 +85,8 @@ import { AppConfigModule } from './admin-panel/layout/config/config.module';
 import { AppLayoutModule } from './admin-panel/layout/app.layout.module';
 import { SidebarModule } from 'primeng/sidebar';
 import { SurveyResultsComponent } from './admin-panel/survey-management/survey-results/survey-results.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
     declarations: [
@@ -149,7 +150,9 @@ import { SurveyResultsComponent } from './admin-panel/survey-management/survey-r
         SurveyCreatorModule,
         NgApexchartsModule,
         AppConfigModule,
-        AppLayoutModule
+        AppLayoutModule,
+        BadgeModule,
+        NgbModule
     ]
 })
 export class AppModule { }

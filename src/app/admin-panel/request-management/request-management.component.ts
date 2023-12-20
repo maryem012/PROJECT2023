@@ -4,6 +4,7 @@ import { ComplaintsService } from 'src/app/services/complaints.service';
 import { RequestService } from 'src/app/services/request.service';
 import { LayoutService } from '../layout/service/app.layout.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-request-management',
@@ -22,8 +23,8 @@ export class RequestManagementComponent implements OnInit, AfterViewInit {
   constructor(private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private layoutService: LayoutService,
-    private requestService: RequestService, private complainService: ComplaintsService, private router: Router) {
-
+    private requestService: RequestService, private complainService: ComplaintsService, private router: Router,private notificationService:NotificationService
+    ) {
   }
 
 
@@ -58,10 +59,11 @@ export class RequestManagementComponent implements OnInit, AfterViewInit {
       this.requestService.updateRequest(this.selectedRequest).subscribe({
         next: (res) => {
           console.log(res);
+
         },
         error: (e) => console.error(e)
       })
-  
+
     }}
 
   confirmMarkAsTreated() {

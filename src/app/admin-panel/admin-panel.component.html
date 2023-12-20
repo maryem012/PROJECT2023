@@ -2,7 +2,7 @@
 
 
       <div class="container-fluid">
-        
+
        <div class="container-fluid">
         <span ><h3 > <b class="text-blue-600">Hello,</b> {{admin.firstName}} {{admin.lastName}} </h3>
         </span>
@@ -16,7 +16,7 @@
                   </div>
                   <div>
 
-                  
+
                     <select class="form-select" [(ngModel)]="selectedSurvey" (change)="displaySurveyResults(selectedSurvey)">
                       <option *ngFor="let survey of surveys" [value]="survey.filename">{{ survey.filename }}</option>
                     </select>
@@ -38,9 +38,9 @@
                       class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
                       <i class="ti ti-arrow-up-left text-success"></i>
                     </span>
-                   
+
                   </div>
-                 
+
                 </div>
                 <div class="col-4">
                   <div class="d-flex justify-content-center">
@@ -62,12 +62,12 @@
                         class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
                         <i class="ti ti-arrow-down-right text-danger"></i>
                       </span>
-                    
+
                     </div>
                   </div>
                   <div class="col-4">
                     <div class="d-flex justify-content-end">
-                     
+
                     </div>
                   </div>
                 </div>
@@ -77,6 +77,45 @@
           </div>
        </div>
         <div class="row">
+          <div class="col-lg-4 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <div class="mb-4  ">
+                  <div
+                  class="d-sm-flex d-block align-items-center justify-content-between mb-9"
+                >
+                  <div class="mb-3 mb-sm-0">
+                    <h5 class="card-title fw-semibold">surveys Results</h5>
+                  </div>
+                  <div>
+                    <select
+                    class="form-select"
+                    [(ngModel)]="selectedSurvey"
+                    (change)="onSurveySelect()"
+                  >
+                    <!-- Iterate through survey options -->
+                    <option
+                      *ngFor="let survey of surveys"
+                      [value]="survey.filename"
+                    >
+                      {{ survey.filename }}
+                    </option>
+                  </select>
+
+                  </div>
+
+                </div>
+                <div class="chart-container">
+                  <h3>{{ chartData.title }}</h3>
+
+                  <div *ngFor="let chartData of multipleChartData">
+                    <h3>{{ chartData.title }}</h3>
+                    <p-chart *ngIf="chartData" [type]="chartData.chartType" [data]="chartData"></p-chart>
+                  </div>            </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="col-lg-4 d-flex align-items-stretch">
             <div class="card w-100">
               <div class="card-body p-4">

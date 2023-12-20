@@ -43,7 +43,7 @@
               "src/assets/js/app.min.js",
               "node_modules/apexcharts/dist/apexcharts.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "../node_modules/chart.js/dist/chart.js"
+              "node_modules/chart.js/dist/chart.js"
 
 
 
@@ -114,7 +114,10 @@
 
 
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/chart.js/dist/chart.js"
+
+            ]
           }
         }
       }

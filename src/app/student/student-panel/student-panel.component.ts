@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { certification } from 'src/app/interfaces/certification';
 import { complaint } from 'src/app/interfaces/complaint';
 import { request } from 'src/app/interfaces/request';
 import { AuthService } from 'src/app/services/auth.service';
 import { CertificationService } from 'src/app/services/certification.service';
 import { ComplaintsService } from 'src/app/services/complaints.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { RequestService } from 'src/app/services/request.service';
 
 @Component({
@@ -13,8 +15,10 @@ import { RequestService } from 'src/app/services/request.service';
   templateUrl: './student-panel.component.html',
   styleUrls: ['./student-panel.component.css']
 })
-export class StudentPanelComponent implements OnInit {
-  constructor(private certificationService: CertificationService, private authservice: AuthService, private requestService: RequestService, private messageService: MessageService, private complaintService: ComplaintsService) { }
+export class StudentPanelComponent implements OnInit  {
+  notification: string = '';
+  private subscription: Subscription = new Subscription;
+  constructor(private notificationService:NotificationService, private certificationService: CertificationService, private authservice: AuthService, private requestService: RequestService, private messageService: MessageService, private complaintService: ComplaintsService) { }
   student: any;
   loadedCert: any
   request: request = {
@@ -43,6 +47,7 @@ export class StudentPanelComponent implements OnInit {
     Title: "",
     provider: "",
     file: "",
+
   }
   loadedReq: any;
   loadedCom: any
@@ -58,7 +63,9 @@ export class StudentPanelComponent implements OnInit {
     this.loadRequest();
     this.loadCertifs();
 
+
   }
+
 
   loadRequest() {
     this.requestService.getRequests().subscribe(res => {
@@ -96,5 +103,5 @@ export class StudentPanelComponent implements OnInit {
     }
 
 
-  
+
 }

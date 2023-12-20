@@ -40797,3 +40797,13 @@ ul {
 .div3 {
   grid-area: 3/4/5/6
 }
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px; /* Adjust the gap between charts */
+}
+
+.chart-item {
+  flex: 1 1 calc(33.33% - 20px); /* Adjust the width of each chart item */
+  max-width: calc(33.33% - 20px); /* Adjust the maximum width of each chart */
+}

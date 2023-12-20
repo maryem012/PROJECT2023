@@ -20,6 +20,7 @@ export type ChartOptions = {
   responsive: ApexResponsive[];
   labels: any[];
 };
+const availableChartTypes: string[] = ['bar', 'pie']; // Add more types as needed
 
 @Component({
   selector: 'app-admin-panel',
@@ -47,6 +48,7 @@ export class AdminPanelComponent implements OnInit,AfterViewInit {
   selectedChartType: string = 'bar'; // Default chart type
   result:any
   Selectedsurvey:any
+
   constructor(private requestService:RequestService,private complainService:ComplaintsService,private router: Router,private route: ActivatedRoute,    private layoutService: LayoutService,
     private surveyService:SurveyService,private messageService: MessageService, private http: HttpClient,private fileUploadService: SurveyService,private confirmationService:ConfirmationService) {
   }
@@ -58,9 +60,16 @@ export class AdminPanelComponent implements OnInit,AfterViewInit {
      this.loadComplain();
      this.fetchSurveys();
      this.fetchSurveyResults()
-     if(this.Selectedsurvey){
-this.displaySurveyResults(this.Selectedsurvey)
-     }
+     this.surveyService.getSurveys().subscribe(
+      (data: any) => {
+        this.surveys = data; // Assuming data contains the list of available surveys
+        this.selectRandomSurvey();
+      },
+      (error: any) => {
+        console.error('Error fetching surveys:', error);
+        // Handle error, show error message, etc.
+      }
+    );
   }
     ngAfterViewInit(): void {
     // You can access the chart here via this.chart
@@ -69,6 +78,16 @@ this.displaySurveyResults(this.Selectedsurvey)
   toggleSidebar() {
     this.isSidebarHidden = !this.isSidebarHidden;
   }
+  selectRandomSurvey(): void {
+    if (this.surveys && this.surveys.length > 0) {
+      const randomIndex = Math.floor(Math.random() * this.surveys.length);
+      this.selectedSurvey = this.surveys[randomIndex].filename;
+
+      // Fetch and display results for the randomly selected survey
+      if (this.selectedSurvey) {
+        this.displaySurveyResults(this.selectedSurvey);
+      }
+    }}
   loadRequest(){
     this.requestService.getRequests().subscribe(res=>{
       this.loadedReq=res
@@ -101,6 +120,10 @@ fetchSurveys(): void {
 }
 //charts
 
+onSurveySelect(): void {
+  this.displaySurveyResults(this.selectedSurvey);
+}
+
 displaySurveyResults(filename: string): void {
   this.surveyService.getSurveyResultByFilename(filename).subscribe(
     (data: any) => {
@@ -109,9 +132,12 @@ displaySurveyResults(filename: string): void {
 
       // Extract field names dynamically and set questionsList
       if (this.surveyResults && this.surveyResults.length > 0) {
-        const firstSurvey = this.surveyResults[0]; // Consider the first survey for field extraction
+        const firstSurvey = this.surveyResults[0];
         this.questionsList = Object.keys(firstSurvey.results.surveyResults);
         console.log('Questions List:', this.questionsList);
+
+        // Call displayCharts to render charts for each question
+        this.displayCharts();
       } else {
         console.log('No survey results found.');
       }
@@ -120,20 +146,28 @@ displaySurveyResults(filename: string): void {
       console.error('Error fetching survey results:', error);
       // Handle error, show error message, etc.
     }
-  );}
+  );
+}
 
-displayMultipleCharts(): void {
-  if (this.selectedQuestions.length > 0 && this.surveyResults) {
-    // Initialize an array to hold chart data for multiple questions
+// Add available chart types at the top of the component
+
+// Inside the component class
+displayCharts(): void {
+  if (this.questionsList.length > 0 && this.surveyResults) {
+    // Clear previous chart data
     this.multipleChartData = [];
 
-    // Iterate through each selected question
-    this.selectedQuestions.forEach((selectedQuestion: string | number) => {
+    // Create an array to store titles and chart types for each chart
+    const chartTitles: string[] = [];
+    const chartTypes: string[] = [];
+
+    // Iterate through each question
+    this.questionsList.forEach((selectedQuestion: string | number) => {
       const questionMap: Map<string, number> = new Map();
 
       this.surveyResults.forEach((result: any) => {
         const response = result.results.surveyResults[selectedQuestion];
-        const responseKey = JSON.stringify(response); // Convert the response to a string key
+        const responseKey = JSON.stringify(response);
 
         if (questionMap.has(responseKey)) {
           questionMap.set(responseKey, questionMap.get(responseKey)! + 1);
@@ -142,23 +176,41 @@ displayMultipleCharts(): void {
         }
       });
 
-      const labels: string[] = Array.from(questionMap.keys());
-      const data: number[] = Array.from(questionMap.values());
+      const surveyLabels: string[] = Array.from(questionMap.keys());
+      const surveyData: number[] = Array.from(questionMap.values());
 
-      // Push chart data for each question into the array
-      this.multipleChartData.push({
-        labels: labels,
+      // Randomly select a chart type for each question
+      const randomChartType = availableChartTypes[Math.floor(Math.random() * availableChartTypes.length)];
+
+      // Create chart data for each question without a title
+      const chartData = {
+        labels: surveyLabels,
         datasets: [
           {
-            data: data,
-            backgroundColor: this.getRandomColors(data.length), // Function to generate random colors
-            type: this.selectedChartType // Set the chart type dynamically
+            data: surveyData,
+            backgroundColor: this.getRandomColors(surveyData.length), // Function to generate random colors
+            type: randomChartType // Assign the random chart type
           }
         ]
-      });
+      };
+
+      // Push chart data for each question into the array
+      this.multipleChartData.push(chartData);
+
+      // Push the title and chart type for each chart into the respective arrays
+      chartTitles.push(selectedQuestion.toString()); // Assuming selectedQuestion is a string
+      chartTypes.push(randomChartType);
+    });
+
+    // Assign titles and chart types to each chart data
+    this.multipleChartData.forEach((chartData, index) => {
+      chartData['title'] = chartTitles[index];
+      chartData['chartType'] = chartTypes[index];
     });
   }
 }
+
+
 getRandomColors(count: number): string[] {
   // Generate random colors (you can modify this function as needed)
   const colors = [];

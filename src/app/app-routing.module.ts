@@ -18,6 +18,7 @@ import { StudentManagementComponent } from './admin-panel/student-management/stu
 import { ComplaintManagementComponent } from './admin-panel/complaint-management/complaint-management.component';
 import { AppLayoutComponent } from './admin-panel/layout/app.layout.component';
 import { SurveyResultsComponent } from './admin-panel/survey-management/survey-results/survey-results.component';
+import { HeaderComponent } from './header/header.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'admin/survey_management/Surveyresults/:filename', component: SurveyResultsComponent },
 
 
+  { path: 'header', component: HeaderComponent },
 
 
 ]

@@ -1,7 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../admin-panel/layout/service/app.layout.service';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -9,16 +11,24 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  constructor(public layoutService: LayoutService,private authservice:AuthService ) { }
+  notification: string = '';
+  private subscription: Subscription = new Subscription;
+  constructor(public layoutService: LayoutService,private authservice:AuthService,private notificationService: NotificationService ) { }
   name = 'Angular';
   public isCollapsed = true;
   items!: MenuItem[] | undefined
   activeItem: MenuItem | undefined;
   rounded:any=false;
   student:any
+  number:string=""
+  showNotificationMessage:any;
+  notifications: any[] = [];
+  clicked:boolean=false
   ngOnInit(): void {
     this.student = localStorage.getItem('user');
     this.student = JSON.parse(this.student);
+    this.fetchNotifications();
+
     this.items = [
       {
         label: 'Home',
@@ -48,7 +58,7 @@ export class HeaderComponent implements OnInit {
       {
         label: 'survey',
         icon: 'pi pi-fw pi-user',
-        routerLink:['/survey']
+        routerLink:['/surveylist']
 
       },
 
@@ -57,9 +67,22 @@ export class HeaderComponent implements OnInit {
 
   }
 
+  fetchNotifications(): void {
+    this.notificationService.getNotifications( this.student._id)
+      .subscribe(data => {
+        this.notifications = data;
+        console.log('notif',this.notifications)
+this.number=this.notifications.length.toString()
+console.log('notif',this.number)
+
+      });
+  }
   logOut() {
     this.authservice.doLogout()
 
+    }
+    isClicked(){
+this.clicked=true
     }
   }
 

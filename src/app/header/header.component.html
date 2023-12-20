@@ -3,24 +3,59 @@
     <img src="../assets/tekup.png" width="170" alt="" />
   </a>
 
-  <p-tabMenu [scrollable]="true" [model]="items" [activeItem]="activeItem" ></p-tabMenu>
+  <p-tabMenu
+    [scrollable]="true"
+    [model]="items"
+    [activeItem]="activeItem"
+  ></p-tabMenu>
 
-  <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
-      <i class="pi pi-ellipsis-v"></i>
+  <button
+    #topbarmenubutton
+    class="p-link layout-topbar-menu-button layout-topbar-button"
+    (click)="layoutService.showProfileSidebar()"
+  >
+    <i class="pi pi-ellipsis-v"></i>
   </button>
 
-  <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-      <button class="p-link layout-topbar-button">
-          <i class="pi pi-calendar"></i>
-          <span>Calendar</span>
-      </button>
-      <button class="p-link layout-topbar-button">
-          <i class="pi pi-user"></i>
-          <span>Profile</span>
-      </button>
-      <button class="p-link layout-topbar-button" (click)="logOut()"[routerLink]="'/login'">
-          <i class="pi pi-sign-out"></i>
-          <span>Settings</span>
-      </button>
+  <div
+    #topbarmenu
+    class="layout-topbar-menu"
+    [ngClass]="{
+      'layout-topbar-menu-mobile-active':
+        layoutService.state.profileSidebarVisible
+    }"
+  >
+  <div ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline layout-topbar-button" id="dropdownBasic1" ngbDropdownToggle     #topbarmenubutton
+    >
+      <i class="pi pi-bell " pBadge value="{{this.number}}"></i>
+
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu">
+      <div *ngIf="notifications.length === 0" class="dropdown-header">No notifications</div>
+      <div *ngFor="let notification of notifications">
+        <div class="dropdown-item">
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-info">
+            <span>{{ notification.timestamp | date: 'medium' }}</span>
+            <!-- Add other notification info here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+  </div>
+  <button class="p-link layout-topbar-button">
+    <i class="pi pi-user"></i>
+    <span>Profile</span>
+  </button>
+  <button
+    class="p-link layout-topbar-button"
+    (click)="logOut()"
+    [routerLink]="'/login'"
+  >
+    <i class="pi pi-sign-out"></i>
+    <span>Settings</span>
+  </button>
 </div>

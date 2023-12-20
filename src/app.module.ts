@@ -21,6 +21,9 @@ import { SurveyController } from './survey/survey.controller';
 import { SurveyService } from './survey/survey.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { SurveyModule } from './survey/survey.module';
+import { NotificationService } from './notification/notification.service';
+import { NotificationController } from './notification/notification.controller';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
 
@@ -37,6 +40,7 @@ import { SurveyModule } from './survey/survey.module';
           dest: './uploads', // Specify the destination folder where uploaded files will be stored
         }),
         SurveyModule,
+        NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

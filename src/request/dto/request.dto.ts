@@ -22,4 +22,8 @@ export class requestDto{
     @ApiProperty()
 
     request:string
+    @ApiProperty()
+
+    status:string
+
 }

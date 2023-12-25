@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { ExtractJwt } from 'passport-jwt';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
       @InjectModel('Users') private authModel: Model<Userauth>,
       private jwtService: JwtService,
       private usersService: UserService,
+      private mailerService:MailerService
     ) {}
   
     /**
@@ -83,7 +85,8 @@ export class AuthService {
       }
   
       const fuserByEmail = await this.usersService.getUserByEmail(body.email);
-  
+      await this.sendRegistrationEmail(body.email,body.password); // Call the email sending method
+
       if (fuserByEmail) {
         return res.status(HttpStatus.CONFLICT).json({
           statusCode: HttpStatus.CONFLICT,
@@ -128,7 +131,22 @@ export class AuthService {
         },
       });
     }
-  
+    private async sendRegistrationEmail(email: string,password:string) {
+      try {
+        await this.mailerService.sendMail({
+          to: email,
+          subject: 'Registration Confirmation',
+          text: `Welcome to Tekup! Your account has been successfully created.\n\n` +
+          `Email: ${email}\nPassword: ${password}\n\n` +
+          `You can now use these credentials to access the platform.`,
+        });
+      } catch (error) {
+        // Handle any errors that occur during email sending
+        console.error('Error sending email:', error);
+        // You can throw an error or handle it based on your requirement
+        throw new Error('Failed to send registration email');
+      }
+    }
     async getAuthUser(@Req() req) {
       const jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
       const payload: any = this.jwtService.decode(jwtFromRequest, {});
@@ -153,6 +171,8 @@ export class AuthService {
       const fuserByEmail = await this.usersService.getUserByEmail(
         user.email,
       );
+      await this.sendRegistrationEmail(body.email,body.password); // Call the email sending method
+
       if (fuserByEmail) {
         return res.status(HttpStatus.CONFLICT).json({
           statusCode: HttpStatus.CONFLICT,

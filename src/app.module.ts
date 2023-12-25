@@ -24,6 +24,7 @@ import { SurveyModule } from './survey/survey.module';
 import { NotificationService } from './notification/notification.service';
 import { NotificationController } from './notification/notification.controller';
 import { NotificationModule } from './notification/notification.module';
+import { MymailerModule } from './mailer/mymailer.module';
 
 @Module({
 

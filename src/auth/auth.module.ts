@@ -12,6 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt-auth.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { UserService } from 'src/user/user.service';
+import { MymailerModule } from 'src/mailer/mymailer.module';
 
 @Module({
   imports: [
@@ -23,6 +24,8 @@ import { UserService } from 'src/user/user.service';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
+    MymailerModule,
+
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, StudentStrategy,UserService],

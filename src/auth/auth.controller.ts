@@ -16,6 +16,7 @@ async signUp(
   @Res() res,
   @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
 ): Promise<void> {
+  
   return await this.userauthService.signUp(res, authCredentialsDto);
 }
 

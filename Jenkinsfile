@@ -10,65 +10,74 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
-                echo 'Repository Cloned'
+                script {
+                    checkout scm
+                    echo 'Repository Cloned'
+                }
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                sh '''
-                    npm install -g @angular/cli@16.1.0
-                    npm install
-                '''
-                echo 'Dependencies installed'
+                script {
+                    sh '''
+                        npm install -g @angular/cli@16.1.0
+                        npm install
+                    '''
+                    echo 'Dependencies installed'
+                }
             }
         }
         
         stage('Build') {
             steps {
-                sh 'ng build --configuration production'
-                echo 'Angular app built'
+                script {
+                    sh 'ng build --configuration production'
+                    echo 'Angular app built'
+                }
             }
         }
         
         stage('Docker Build') {
             steps {
-                sh """
-                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                    echo 'Docker image built'
-                """
-            }
-        }
-        
-        stage('Docker Login') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
-                    sh '''
-                        echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                        echo 'Login Completed'
-                    '''
+                script {
+                    sh """
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        echo 'Docker image built'
+                    """
                 }
             }
         }
         
-        stage('Docker Push') {
+        stage('Docker Login and Push') {
             steps {
-                sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                echo 'Push Completed'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh """
+                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        """
+                    }
+                }
             }
         }
     }
     
     post {
-        always {
-            sh 'docker logout'
-        }
         success {
-            echo 'Pipeline executed successfully!'
+            script {
+                echo 'Pipeline succeeded! Docker image pushed to registry'
+            }
         }
         failure {
-            echo 'Pipeline execution failed!'
+            script {
+                echo 'Pipeline failed!'
+            }
+        }
+        always {
+            script {
+                sh 'docker logout'
+            }
         }
     }
 }

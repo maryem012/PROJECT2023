@@ -5,7 +5,6 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         DOCKER_IMAGE = "marwaguerfel/tekupstudents"
         DOCKER_TAG = "latest"
-        NODE_VERSION = '16'
     }
     
     stages {
@@ -13,17 +12,6 @@ pipeline {
             steps {
                 checkout scm
                 echo 'Repository Cloned'
-            }
-        }
-        
-        stage('Setup Node.js') {
-            steps {
-                sh '''
-                    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-                    sudo apt-get install -y nodejs
-                    node --version
-                    npm --version
-                '''
             }
         }
         
@@ -46,19 +34,21 @@ pipeline {
         
         stage('Docker Build') {
             steps {
-                script {
-                    sh """
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        echo 'Docker image built'
-                    """
-                }
+                sh """
+                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                    echo 'Docker image built'
+                """
             }
         }
         
         stage('Docker Login') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                echo 'Login Completed'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                    sh '''
+                        echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+                        echo 'Login Completed'
+                    '''
+                }
             }
         }
         
@@ -72,7 +62,9 @@ pipeline {
     
     post {
         always {
-            sh 'docker logout'
+            node {
+                sh 'docker logout'
+            }
         }
         success {
             echo 'Pipeline executed successfully!'

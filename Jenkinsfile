@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
+        DOCKERHUB_CREDENTIALS = credentials('Docker-ID') 
         DOCKER_IMAGE = "marwaguerfel/tekupstudents"
         DOCKER_TAG = "latest"
     }
@@ -53,10 +53,10 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    sh """
+                    sh '''
                         sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                         echo 'Docker image built'
-                    """
+                    '''
                 }
             }
         }
@@ -79,7 +79,7 @@ pipeline {
                 echo 'Pipeline succeeded! Docker image pushed to registry'
             }
         }
-        failure {
+        failure { 
             script {
                 echo 'Pipeline failed!'
             }

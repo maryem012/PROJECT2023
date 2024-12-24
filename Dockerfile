@@ -1,15 +1,31 @@
 # Build stage
 FROM node:16 as builder
+
 WORKDIR /app
+
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
+
+# Copy source code
 COPY . .
-RUN npm install -g @angular/cli@16.1.0
-RUN ng build --configuration production
+
+# Build the application
+RUN npm run build -- --configuration production
 
 # Production stage
 FROM nginx:alpine
-COPY --from=builder /app/dist/tekup-students /usr/share/nginx/html/
+
+# Copy built files from builder
+COPY --from=builder /app/dist/tek-up-students /usr/share/nginx/html/
+
+# Add nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
 EXPOSE 80
+
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]

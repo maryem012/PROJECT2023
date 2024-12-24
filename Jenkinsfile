@@ -17,12 +17,27 @@ pipeline {
             }
         }
         
+        stage('Setup Node.js') {
+            steps {
+                script {
+                    sh '''
+                        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                        sudo apt-get install -y nodejs
+                        node --version
+                        npm --version
+                    '''
+                }
+            }
+        }
+        
         stage('Install Dependencies') {
             steps {
                 script {
                     sh '''
-                        npm install -g @angular/cli@16.1.0
                         npm install
+                        # Using locally installed Angular CLI
+                        export PATH="$PATH:$(pwd)/node_modules/.bin"
+                        ng version
                     '''
                     echo 'Dependencies installed'
                 }
@@ -32,7 +47,10 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'ng build --configuration production'
+                    sh '''
+                        export PATH="$PATH:$(pwd)/node_modules/.bin"
+                        ng build --configuration production
+                    '''
                     echo 'Angular app built'
                 }
             }
@@ -42,7 +60,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                         echo 'Docker image built'
                     """
                 }
@@ -52,10 +70,10 @@ pipeline {
         stage('Docker Login and Push') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
-                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            echo '$DOCKER_PASSWORD' | sudo docker login -u '$DOCKER_USERNAME' --password-stdin
+                            sudo docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
                         """
                     }
                 }
@@ -76,7 +94,7 @@ pipeline {
         }
         always {
             script {
-                sh 'docker logout'
+                sh 'sudo docker logout || true'
             }
         }
     }

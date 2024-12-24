@@ -2,7 +2,10 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        DOCKER_IMAGE = "marwaguerfel/tekupstudents"
+        DOCKER_TAG = "latest"
+        NODE_VERSION = '16'
     }
     
     stages {
@@ -13,44 +16,64 @@ pipeline {
             }
         }
         
-        stage('Build') {
+        stage('Setup Node.js') {
             steps {
-                sh 'npm install'
-                echo 'Building the application'
+                sh '''
+                    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                    sudo apt-get install -y nodejs
+                    node --version
+                    npm --version
+                '''
             }
         }
         
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
-                sh 'npm test'
-                echo 'Running tests'
+                sh '''
+                    npm install -g @angular/cli@16.1.0
+                    npm install
+                '''
+                echo 'Dependencies installed'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'ng build --configuration production'
+                echo 'Angular app built'
             }
         }
         
         stage('Docker Build') {
             steps {
-                sh 'docker build -t your-image-name .'
-                echo 'Docker image built'
+                script {
+                    sh """
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        echo 'Docker image built'
+                    """
+                }
+            }
+        }
+        
+        stage('Docker Login') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                echo 'Login Completed'
             }
         }
         
         stage('Docker Push') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'docker push your-image-name'
-                echo 'Docker image pushed'
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                echo 'Deploying to server'
-                // Add deployment commands here
+                sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                echo 'Push Completed'
             }
         }
     }
     
     post {
+        always {
+            sh 'docker logout'
+        }
         success {
             echo 'Pipeline executed successfully!'
         }

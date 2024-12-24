@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
+        DOCKERHUB_CREDENTIALS = credentials('Docker-ID') // Replace with your actual credentials ID
         DOCKER_IMAGE = "marwaguerfel/tekupstudents"
         DOCKER_TAG = "latest"
     }
@@ -21,7 +21,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                        # Install Node.js 18 (recommended version for modern Angular projects)
+                        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
                         sudo apt-get install -y nodejs
                         node --version
                         npm --version
@@ -34,8 +35,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        npm install
-                        # Using locally installed Angular CLI
+                        # Install dependencies with legacy peer dependency resolution
+                        npm install --legacy-peer-deps
+                        # Add Angular CLI to PATH for local installation
                         export PATH="$PATH:$(pwd)/node_modules/.bin"
                         ng version
                     '''
@@ -49,6 +51,7 @@ pipeline {
                 script {
                     sh '''
                         export PATH="$PATH:$(pwd)/node_modules/.bin"
+                        # Build Angular application
                         ng build --configuration production
                     '''
                     echo 'Angular app built'
@@ -94,8 +97,10 @@ pipeline {
         }
         always {
             script {
+                // Ensure Docker logout happens regardless of pipeline success or failure
                 sh 'sudo docker logout || true'
             }
         }
     }
 }
+

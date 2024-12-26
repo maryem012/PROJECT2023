@@ -1,98 +1,108 @@
 pipeline {
     agent any
     
-
-    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
-        BACKEND_IMAGE = "maryam2904/project2023-backend"
+        DOCKER_IMAGE = "maryam2904/project2023-frontend"
         DOCKER_TAG = "${BUILD_NUMBER}"
     }
     
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    checkout scm
-                    echo 'Repository Cloned'
-                }
+                checkout scm
+                echo 'Repository Cloned'
             }
         }
-        stage('Setup Node.js') {
+        
+        stage('Setup Environment') {
             steps {
                 script {
                     sh '''
+                        # Install Node.js
                         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
                         sudo apt-get install -y nodejs
+                        
+                        # Install Angular CLI globally
+                        sudo npm install -g @angular/cli
+                        
+                        # Verify installations
                         node --version
                         npm --version
+                        ng version
                     '''
                 }
             }
         }
+        
         stage('Install Dependencies') {
             steps {
                 script {
                     sh '''
+                        # Install project dependencies
                         npm install --legacy-peer-deps
                         npm audit fix --force || true
-                        export PATH="$PATH:$(pwd)/node_modules/.bin"
-                        ng version
                     '''
-                    echo 'Dependencies installed'
                 }
             }
         }
-        stage('Build') {
+        
+        stage('Build Angular App') {
             steps {
                 script {
                     sh '''
+                        # Ensure Angular CLI is in PATH
                         export PATH="$PATH:$(pwd)/node_modules/.bin"
+                        
+                        # Build production version
                         ng build --configuration production
                     '''
-                    echo 'Angular app built'
                 }
             }
         }
+        
         stage('Docker Build') {
             steps {
                 script {
-                    sh '''
-                        sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        echo 'Docker image built'
-                    '''
+                    sh """
+                        # Build Docker image
+                        docker context use desktop-linux
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                    """
                 }
             }
         }
-        stage('Docker Login and Push') {
+        
+        stage('Docker Push') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            echo '$DOCKER_PASSWORD' | sudo docker login -u '$DOCKER_USERNAME' --password-stdin
-                            sudo docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            # Login to Docker Hub
+                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            
+                            # Push images
+                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker push ${DOCKER_IMAGE}:latest
                         """
                     }
                 }
             }
         }
     }
+    
     post {
         success {
-            script {
-                echo 'Pipeline succeeded! Docker image pushed to registry'
-            }
+            echo 'Pipeline succeeded! Docker image pushed to registry'
         }
         failure { 
-            script {
-                echo 'Pipeline failed!'
-            }
+            echo 'Pipeline failed! Check logs for details'
         }
         always {
-            script {
-                sh 'sudo docker logout || true'
-            }
+            sh 'docker logout || true'
+            cleanWs()  // Clean workspace
         }
     }
 }

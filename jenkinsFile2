@@ -1,9 +1,7 @@
 pipeline {
     agent any
     
-    tools {
-        nodejs "Node 18"  // Add Node.js tool configuration
-    }
+
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')

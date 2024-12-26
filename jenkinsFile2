@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
-        FRONTEND_DOCKER_IMAGE = "marwaguerfel/tekupstudents-frontend"
-        BACKEND_DOCKER_IMAGE = "marwaguerfel/tekupstudents-backend"
+        FRONTEND_DOCKER_IMAGE = "maryem012/project2023-frontend"
+        BACKEND_DOCKER_IMAGE = "maryem012/project2023-backend"
         DOCKER_TAG = "latest"
     }
     stages {
@@ -34,7 +34,7 @@ pipeline {
             stages {
                 stage('Install Frontend Dependencies') {
                     steps {
-                        dir('main') {  // Changed to 'main' directory
+                        dir('main') {
                             script {
                                 sh '''
                                     npm install --legacy-peer-deps
@@ -50,7 +50,7 @@ pipeline {
                 
                 stage('Build Frontend') {
                     steps {
-                        dir('main') {  // Changed to 'main' directory
+                        dir('main') {
                             script {
                                 sh '''
                                     export PATH="$PATH:$(pwd)/node_modules/.bin"
@@ -64,7 +64,7 @@ pipeline {
                 
                 stage('Build Frontend Docker Image') {
                     steps {
-                        dir('main') {  // Changed to 'main' directory
+                        dir('main') {
                             script {
                                 sh """
                                     sudo docker build -t ${FRONTEND_DOCKER_IMAGE}:${DOCKER_TAG} .

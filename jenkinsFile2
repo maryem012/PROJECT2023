@@ -1,0 +1,160 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
+        FRONTEND_DOCKER_IMAGE = "marwaguerfel/tekupstudents-frontend"
+        BACKEND_DOCKER_IMAGE = "marwaguerfel/tekupstudents-backend"
+        DOCKER_TAG = "latest"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                    echo 'Repository Cloned'
+                }
+            }
+        }
+        
+        stage('Setup Node.js') {
+            steps {
+                script {
+                    sh '''
+                        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                        sudo apt-get install -y nodejs
+                        node --version
+                        npm --version
+                    '''
+                }
+            }
+        }
+
+        // Frontend Stages
+        stage('Frontend Build') {
+            stages {
+                stage('Install Frontend Dependencies') {
+                    steps {
+                        dir('frontend') {  // Adjust directory name if different
+                            script {
+                                sh '''
+                                    npm install --legacy-peer-deps
+                                    npm audit fix --force || true
+                                    export PATH="$PATH:$(pwd)/node_modules/.bin"
+                                    ng version
+                                '''
+                                echo 'Frontend Dependencies installed'
+                            }
+                        }
+                    }
+                }
+                
+                stage('Build Frontend') {
+                    steps {
+                        dir('frontend') {
+                            script {
+                                sh '''
+                                    export PATH="$PATH:$(pwd)/node_modules/.bin"
+                                    ng build --configuration production
+                                '''
+                                echo 'Angular app built'
+                            }
+                        }
+                    }
+                }
+                
+                stage('Build Frontend Docker Image') {
+                    steps {
+                        dir('frontend') {
+                            script {
+                                sh """
+                                    sudo docker build -t ${FRONTEND_DOCKER_IMAGE}:${DOCKER_TAG} .
+                                    echo 'Frontend Docker image built'
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Backend Stages
+        stage('Backend Build') {
+            stages {
+                stage('Install Backend Dependencies') {
+                    steps {
+                        dir('backend') {  // Adjust directory name if different
+                            script {
+                                sh '''
+                                    npm install
+                                    npm audit fix --force || true
+                                '''
+                                echo 'Backend Dependencies installed'
+                            }
+                        }
+                    }
+                }
+                
+                stage('Build Backend') {
+                    steps {
+                        dir('backend') {
+                            script {
+                                sh '''
+                                    npm run build
+                                '''
+                                echo 'NestJS app built'
+                            }
+                        }
+                    }
+                }
+                
+                stage('Build Backend Docker Image') {
+                    steps {
+                        dir('backend') {
+                            script {
+                                sh """
+                                    sudo docker build -t ${BACKEND_DOCKER_IMAGE}:${DOCKER_TAG} .
+                                    echo 'Backend Docker image built'
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Login and Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh """
+                            echo '$DOCKER_PASSWORD' | sudo docker login -u '$DOCKER_USERNAME' --password-stdin
+                            sudo docker push ${FRONTEND_DOCKER_IMAGE}:${DOCKER_TAG}
+                            sudo docker push ${BACKEND_DOCKER_IMAGE}:${DOCKER_TAG}
+                        """
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            script {
+                echo 'Pipeline succeeded! Docker images pushed to registry'
+            }
+        }
+        failure { 
+            script {
+                echo 'Pipeline failed!'
+            }
+        }
+        always {
+            script {
+                sh '''
+                    sudo docker logout || true
+                    sudo docker system prune -f || true
+                '''
+            }
+        }
+    }
+}

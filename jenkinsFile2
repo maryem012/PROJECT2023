@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
-        FRONTEND_DOCKER_IMAGE = "maryem012/project2023-frontend"
-        BACKEND_DOCKER_IMAGE = "maryem012/project2023-backend"
+        FRONTEND_DOCKER_IMAGE = "maryam2904/project2023-frontend"
+        BACKEND_DOCKER_IMAGE = "maryam2904/project2023-backend"
         DOCKER_TAG = "latest"
     }
     stages {

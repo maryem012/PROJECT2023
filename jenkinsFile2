@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+    tools {
+        nodejs "Node 18"  // Add Node.js tool configuration
+    }
+    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
@@ -8,6 +13,19 @@ pipeline {
     }
     
     stages {
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    // Verify Node.js and npm installation
+                    sh '''
+                        node --version
+                        npm --version
+                        docker --version
+                    '''
+                }
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 script {
@@ -25,20 +43,34 @@ pipeline {
         
         stage('Build Frontend') {
             steps {
-                sh '''
-                    npm install --legacy-peer-deps
-                    npm run build
-                '''
+                script {
+                    try {
+                        sh '''
+                            npm install --legacy-peer-deps
+                            npm run build
+                        '''
+                    } catch (Exception e) {
+                        echo "Frontend build failed: ${e.getMessage()}"
+                        error "Frontend build failed"
+                    }
+                }
             }
         }
         
         stage('Build Backend') {
             steps {
                 dir('backend') {
-                    sh '''
-                        npm install
-                        npm run build
-                    '''
+                    script {
+                        try {
+                            sh '''
+                                npm install
+                                npm run build
+                            '''
+                        } catch (Exception e) {
+                            echo "Backend build failed: ${e.getMessage()}"
+                            error "Backend build failed"
+                        }
+                    }
                 }
             }
         }
@@ -46,29 +78,34 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    // Frontend
-                    sh """
-                        docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
-                        docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                    """
-                    
-                    // Backend
-                    dir('backend') {
+                    try {
+                        // Ensure Docker is logged in
+                        withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            sh """
+                                echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            """
+                        }
+                        
+                        // Frontend Docker Build and Push
                         sh """
-                            docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
-                            docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
-                        """
-                    }
-                    
-                    // Login and Push
-                    withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh """
-                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
                             docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
                             docker push ${FRONTEND_IMAGE}:latest
-                            docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
-                            docker push ${BACKEND_IMAGE}:latest
                         """
+                        
+                        // Backend Docker Build and Push
+                        dir('backend') {
+                            sh """
+                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
+                                docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
+                                docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
+                                docker push ${BACKEND_IMAGE}:latest
+                            """
+                        }
+                    } catch (Exception e) {
+                        echo "Docker build/push failed: ${e.getMessage()}"
+                        error "Docker build/push failed"
                     }
                 }
             }
@@ -77,8 +114,12 @@ pipeline {
     
     post {
         always {
-            sh 'docker logout'
+            sh 'docker logout || true'
             cleanWs()
+        }
+        
+        failure {
+            echo 'Pipeline failed. Check the logs for details.'
         }
     }
 }

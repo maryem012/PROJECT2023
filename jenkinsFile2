@@ -34,7 +34,7 @@ pipeline {
             stages {
                 stage('Install Frontend Dependencies') {
                     steps {
-                        dir('frontend') {  // Adjust directory name if different
+                        dir('main') {  // Changed to 'main' directory
                             script {
                                 sh '''
                                     npm install --legacy-peer-deps
@@ -50,7 +50,7 @@ pipeline {
                 
                 stage('Build Frontend') {
                     steps {
-                        dir('frontend') {
+                        dir('main') {  // Changed to 'main' directory
                             script {
                                 sh '''
                                     export PATH="$PATH:$(pwd)/node_modules/.bin"
@@ -64,7 +64,7 @@ pipeline {
                 
                 stage('Build Frontend Docker Image') {
                     steps {
-                        dir('frontend') {
+                        dir('main') {  // Changed to 'main' directory
                             script {
                                 sh """
                                     sudo docker build -t ${FRONTEND_DOCKER_IMAGE}:${DOCKER_TAG} .
@@ -82,7 +82,7 @@ pipeline {
             stages {
                 stage('Install Backend Dependencies') {
                     steps {
-                        dir('backend') {  // Adjust directory name if different
+                        dir('backend') {
                             script {
                                 sh '''
                                     npm install

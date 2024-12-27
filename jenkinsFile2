@@ -1,146 +1,84 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('Docker-ID') 
+        DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
-        DOCKER_TAG = "latest"
+        DOCKER_TAG = "${BUILD_NUMBER}"
     }
+    
     stages {
         stage('Checkout') {
             steps {
                 script {
+                    // Checkout main branch (frontend)
                     checkout scm
+                    
+                    // Create and checkout backend directory
                     sh 'mkdir -p backend'
                     dir('backend') {
                         git url: 'https://github.com/maryem012/PROJECT2023.git', branch: 'backend'
                     }
-                    echo 'Repositories Cloned'
                 }
             }
         }
-
-        stage('Setup Node.js') {
+        
+        stage('Build Frontend') {
             steps {
-                script {
-                    sh '''
-                        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-                        sudo apt-get install -y nodejs
-                        node --version
-                        npm --version
-                    '''
-                }
+                sh '''
+                    npm install --legacy-peer-deps
+                    npm run build
+                '''
             }
         }
-
-        stage('Frontend Dependencies') {
-            steps {
-                script {
-                    sh '''
-                        npm install --legacy-peer-deps
-                        npm audit fix --force || true
-                        export PATH="$PATH:$(pwd)/node_modules/.bin"
-                        ng version
-                    '''
-                    echo 'Frontend dependencies installed'
-                }
-            }
-        }
-
-        stage('Frontend Build') {
-            steps {
-                script {
-                    sh '''
-                        export PATH="$PATH:$(pwd)/node_modules/.bin"
-                        ng build --configuration production
-                    '''
-                    echo 'Frontend built successfully'
-                }
-            }
-        }
-
-        stage('Backend Dependencies') {
+        
+        stage('Build Backend') {
             steps {
                 dir('backend') {
-                    script {
-                        sh '''
-                            npm install
-                            npm audit fix --force || true
-                        '''
-                        echo 'Backend dependencies installed'
-                    }
+                    sh '''
+                        npm install
+                        npm run build
+                    '''
                 }
             }
         }
-
-        stage('Backend Build') {
-            steps {
-                dir('backend') {
-                    script {
-                        sh '''
-                            npm run build
-                        '''
-                        echo 'Backend built successfully'
-                    }
-                }
-            }
-        }
-
-        stage('Docker Build') {
+        
+        stage('Docker Build & Push') {
             steps {
                 script {
-                    // Frontend Docker build
+                    // Frontend
                     sh """
-                        sudo docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                        docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
                     """
-                    echo 'Frontend Docker image built'
-
-                    // Backend Docker build
+                    
+                    // Backend
                     dir('backend') {
                         sh """
-                            sudo docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
+                            docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
+                            docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
                         """
-                        echo 'Backend Docker image built'
                     }
-                }
-            }
-        }
-
-        stage('Docker Login and Push') {
-            steps {
-                script {
+                    
+                    // Login and Push
                     withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            echo '$DOCKER_PASSWORD' | sudo docker login -u '$DOCKER_USERNAME' --password-stdin
-                            sudo docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
-                            sudo docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
+                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
+                            docker push ${FRONTEND_IMAGE}:latest
+                            docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
+                            docker push ${BACKEND_IMAGE}:latest
                         """
                     }
                 }
             }
         }
     }
-
+    
     post {
-        success {
-            script {
-                echo 'Pipeline succeeded! Docker images pushed to registry'
-            }
-        }
-        failure { 
-            script {
-                echo 'Pipeline failed!'
-            }
-        }
         always {
-            script {
-                sh '''
-                    sudo docker logout || true
-                    rm -rf node_modules package-lock.json
-                    cd backend && rm -rf node_modules package-lock.json || true
-                '''
-                cleanWs()
-            }
+            sh 'docker logout'
+            cleanWs()
         }
     }
 }

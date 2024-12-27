@@ -1,93 +1,110 @@
 pipeline {
     agent any
+    
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('Docker-ID') 
-        DOCKER_IMAGE = "marwaguerfel/tekupstudents"
-        DOCKER_TAG = "latest"
+        DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
+        FRONTEND_IMAGE = "maryam2904/project2023-frontend"
+        BACKEND_IMAGE = "maryam2904/project2023-backend"
+        DOCKER_TAG = "${GIT_COMMIT_SHORT}"
     }
+    
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    checkout scm
-                    echo 'Repository Cloned'
+                checkout scm
+                sh 'mkdir -p backend'
+                dir('backend') {
+                    git url: 'https://github.com/maryem012/PROJECT2023.git', branch: 'backend'
                 }
             }
         }
-        stage('Setup Node.js') {
+        
+        stage('Frontend Build') {
             steps {
                 script {
-                    sh '''
-                        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-                        sudo apt-get install -y nodejs
-                        node --version
-                        npm --version
-                    '''
+                    try {
+                        // Build frontend Docker image
+                        sh """
+                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} \
+                                --build-arg NODE_VERSION=18 \
+                                --build-arg BUILD_CONFIGURATION=production \
+                                -f Dockerfile.frontend .
+                            
+                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
+                        """
+                    } catch (Exception e) {
+                        echo "Frontend build failed: ${e.getMessage()}"
+                        error "Frontend build failed"
+                    }
                 }
             }
         }
-        stage('Install Dependencies') {
+        
+        stage('Backend Build') {
             steps {
-                script {
-                    sh '''
-                        npm install --legacy-peer-deps
-                        npm audit fix --force || true
-                        export PATH="$PATH:$(pwd)/node_modules/.bin"
-                        ng version
-                    '''
-                    echo 'Dependencies installed'
+                dir('backend') {
+                    script {
+                        try {
+                            // Build backend Docker image
+                            sh """
+                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} \
+                                    --build-arg NODE_VERSION=18 \
+                                    -f Dockerfile.backend .
+                                
+                                docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
+                            """
+                        } catch (Exception e) {
+                            echo "Backend build failed: ${e.getMessage()}"
+                            error "Backend build failed"
+                        }
+                    }
                 }
             }
         }
-        stage('Build') {
-            steps {
-                script {
-                    sh '''
-                        export PATH="$PATH:$(pwd)/node_modules/.bin"
-                        ng build --configuration production
-                    '''
-                    echo 'Angular app built'
-                }
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                script {
-                    sh '''
-                        sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        echo 'Docker image built'
-                    '''
-                }
-            }
-        }
-        stage('Docker Login and Push') {
+        
+        stage('Docker Push') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            echo '$DOCKER_PASSWORD' | sudo docker login -u '$DOCKER_USERNAME' --password-stdin
-                            sudo docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
+                            
+                            # Push Frontend Images
+                            docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
+                            docker push ${FRONTEND_IMAGE}:latest
+                            
+                            # Push Backend Images
+                            docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
+                            docker push ${BACKEND_IMAGE}:latest
                         """
                     }
                 }
             }
         }
+        
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh '''
+                        docker logout || true
+                        docker system prune -f
+                        rm -rf node_modules dist
+                        cd backend && rm -rf node_modules dist || true
+                    '''
+                }
+            }
+        }
     }
+    
     post {
         success {
-            script {
-                echo 'Pipeline succeeded! Docker image pushed to registry'
-            }
+            echo 'Pipeline succeeded! Docker images built and pushed successfully'
         }
-        failure { 
-            script {
-                echo 'Pipeline failed!'
-            }
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
         }
         always {
-            script {
-                sh 'sudo docker logout || true'
-            }
+            cleanWs()
         }
     }
 }

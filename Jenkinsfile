@@ -18,45 +18,78 @@ pipeline {
                 }
             }
         }
-        
-        stage('Frontend Build') {
+
+        stage('Create Dockerfile') {
             steps {
                 script {
-                    try {
-                        // Build frontend Docker image
-                        sh """
-                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} \
-                                --build-arg NODE_VERSION=18 \
-                                --build-arg BUILD_CONFIGURATION=production \
-                                -f Dockerfile.frontend .
-                            
-                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                        """
-                    } catch (Exception e) {
-                        echo "Frontend build failed: ${e.getMessage()}"
-                        error "Frontend build failed"
-                    }
+                    // Create frontend Dockerfile
+                    writeFile file: 'Dockerfile', text: '''
+                        FROM node:18 AS builder
+                        WORKDIR /app
+                        
+                        # Copy package files
+                        COPY package*.json ./
+                        
+                        # Install dependencies
+                        RUN npm install --legacy-peer-deps
+                        
+                        # Copy source
+                        COPY . .
+                        
+                        # Build application
+                        RUN npm run build --configuration=production
+
+                        # Production stage
+                        FROM nginx:alpine
+                        COPY nginx.conf /etc/nginx/conf.d/default.conf
+                        COPY --from=builder /app/dist/tek-up-students /usr/share/nginx/html/
+                        EXPOSE 80
+                        CMD ["nginx", "-g", "daemon off;"]
+                    '''
+                }
+                
+                dir('backend') {
+                    // Create backend Dockerfile
+                    writeFile file: 'Dockerfile', text: '''
+                        FROM node:18 AS builder
+                        WORKDIR /app
+                        COPY package*.json ./
+                        RUN npm install
+                        COPY . .
+                        RUN npm run build
+
+                        FROM node:18-alpine
+                        WORKDIR /app
+                        COPY package*.json ./
+                        RUN npm install --only=production
+                        COPY --from=builder /app/dist ./dist
+                        EXPOSE 3000
+                        CMD ["npm", "run", "start:prod"]
+                    '''
                 }
             }
         }
         
-        stage('Backend Build') {
+        stage('Docker Build') {
             steps {
-                dir('backend') {
-                    script {
-                        try {
-                            // Build backend Docker image
+                script {
+                    try {
+                        // Build frontend
+                        sh """
+                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
+                        """
+                        
+                        // Build backend
+                        dir('backend') {
                             sh """
-                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} \
-                                    --build-arg NODE_VERSION=18 \
-                                    -f Dockerfile.backend .
-                                
+                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
                                 docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
                             """
-                        } catch (Exception e) {
-                            echo "Backend build failed: ${e.getMessage()}"
-                            error "Backend build failed"
                         }
+                    } catch (Exception e) {
+                        echo "Docker build failed: ${e.getMessage()}"
+                        error "Docker build failed"
                     }
                 }
             }
@@ -69,11 +102,9 @@ pipeline {
                         sh """
                             echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
                             
-                            # Push Frontend Images
                             docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
                             docker push ${FRONTEND_IMAGE}:latest
                             
-                            # Push Backend Images
                             docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
                             docker push ${BACKEND_IMAGE}:latest
                         """
@@ -88,8 +119,6 @@ pipeline {
                     sh '''
                         docker logout || true
                         docker system prune -f
-                        rm -rf node_modules dist
-                        cd backend && rm -rf node_modules dist || true
                     '''
                 }
             }

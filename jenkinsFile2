@@ -1,14 +1,33 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'Node 18.16.0'
+    }
+    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
         DOCKER_TAG = "${GIT_COMMIT_SHORT}"
+        NODE_VERSION = '18.16.0'
+        ANGULAR_CLI_VERSION = '17.3.8'
     }
     
     stages {
+        stage('Environment Setup') {
+            steps {
+                script {
+                    sh '''
+                        node -v
+                        npm -v
+                        pwd
+                        ls -la
+                    '''
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -19,16 +38,36 @@ pipeline {
             }
         }
         
-        stage('Frontend Dependencies') {
+        stage('Workspace Preparation') {
             steps {
                 script {
                     sh '''
-                        # Install matching Angular CLI version
-                        npm install --save-dev --verbose @angular/cli@^17.3.8
-                        
-                        # Install frontend dependencies
-                        npm install --legacy-peer-deps
+                        chmod -R 777 .
+                        mkdir -p node_modules
                     '''
+                }
+            }
+        }
+        
+        stage('Frontend Dependencies') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            npm cache clean --force
+                            rm -rf node_modules package-lock.json
+                            
+                            # Install Angular CLI globally
+                            npm install -g @angular/cli@17.3.8
+                            
+                            # Install project dependencies
+                            npm install --legacy-peer-deps --verbose
+                        '''
+                    } catch (Exception e) {
+                        echo "Dependencies installation failed: ${e.getMessage()}"
+                        sh 'cat /var/lib/jenkins/.npm/_logs/*-debug-0.log || true'
+                        error "Dependencies installation failed"
+                    }
                 }
             }
         }
@@ -53,10 +92,16 @@ pipeline {
             steps {
                 dir('backend') {
                     script {
-                        sh '''
-                            # Install backend dependencies
-                            npm install
-                        '''
+                        try {
+                            sh '''
+                                npm cache clean --force
+                                rm -rf node_modules package-lock.json
+                                npm install --verbose
+                            '''
+                        } catch (Exception e) {
+                            echo "Backend dependencies installation failed: ${e.getMessage()}"
+                            error "Backend dependencies installation failed"
+                        }
                     }
                 }
             }
@@ -68,7 +113,6 @@ pipeline {
                     script {
                         try {
                             sh '''
-                                # Build backend
                                 npm run build
                             '''
                         } catch (Exception e) {
@@ -106,14 +150,11 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            # Login to Docker Hub
                             echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
                             
-                            # Push Frontend Images
                             docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
                             docker push ${FRONTEND_IMAGE}:latest
                             
-                            # Push Backend Images
                             docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
                             docker push ${BACKEND_IMAGE}:latest
                         """
@@ -127,7 +168,7 @@ pipeline {
                 script {
                     sh '''
                         docker logout || true
-                        docker system prune -f  # Clean up unused resources
+                        docker system prune -f
                     '''
                 }
             }

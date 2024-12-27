@@ -52,17 +52,18 @@ stage('Frontend Dependencies') {
         script {
             try {
                 sh '''
+                    # Clean existing dependencies
                     npm cache clean --force
                     rm -rf node_modules package-lock.json
                     
-                    # Install Angular CLI locally (matching your project version)
-                    npm install @angular/cli@16.1.0
+                    # First install @angular/cdk specifically
+                    npm install @angular/cdk@12.0.0 --save-exact
                     
-                    # Add local node_modules/.bin to PATH
-                    export PATH="$PATH:./node_modules/.bin"
-                    
-                    # Install dependencies
+                    # Then install remaining dependencies
                     npm install --legacy-peer-deps --verbose
+                    
+                    # Verify installation
+                    ./node_modules/.bin/ng version
                 '''
             } catch (Exception e) {
                 echo "Dependencies installation failed: ${e.getMessage()}"
@@ -72,6 +73,7 @@ stage('Frontend Dependencies') {
         }
     }
 }
+
         
         stage('Frontend Build') {
             steps {

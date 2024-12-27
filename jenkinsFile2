@@ -52,16 +52,17 @@ stage('Frontend Dependencies') {
         script {
             try {
                 sh '''
+                    # Set npm prefix to user directory
+                    npm config set prefix '~/.npm-global'
+                    export PATH=~/.npm-global/bin:$PATH
+                    
                     npm cache clean --force
                     rm -rf node_modules package-lock.json
                     
-                    # Install Angular CLI locally instead of globally
-                    npm install @angular/cli@17.3.8
+                    # Install Angular CLI in user directory
+                    npm install -g @angular/cli@17.3.8
                     
-                    # Use local Angular CLI
-                    export PATH="$PATH:./node_modules/.bin"
-                    
-                    # Install remaining dependencies
+                    # Install project dependencies
                     npm install --legacy-peer-deps --verbose
                 '''
             } catch (Exception e) {

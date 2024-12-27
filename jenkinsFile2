@@ -1,23 +1,51 @@
 pipeline {
     agent any
     
-
+    options {
+        // Increase build timeout
+        timeout(time: 30, unit: 'MINUTES')
+        // Prevent concurrent builds
+        disableConcurrentBuilds()
+        // Keep limited number of build logs
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
     
     environment {
+        // Docker Hub Credentials
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
+        
+        // Image Names
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
+        
+        // Build Tag
         DOCKER_TAG = "${BUILD_NUMBER}"
+        
+        // Node.js Memory Configuration
+        NODE_OPTIONS = '--max_old_space_size=8192'
     }
     
     stages {
         stage('Prepare Environment') {
             steps {
                 script {
-                    // Verify Node.js and npm installation
                     sh '''
+                        # Update system packages
+                        sudo apt-get update
+                        
+                        # Install/Update Node.js and npm
+                        sudo apt-get install -y nodejs npm
+                        
+                        # Update npm to latest
+                        npm install -g npm@latest
+                        
+                        # Install global Angular CLI
+                        npm install -g @angular/cli
+                        
+                        # Verify installations
                         node --version
                         npm --version
+                        ng version
                         docker --version
                     '''
                 }
@@ -27,47 +55,84 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout main branch (frontend)
+                    // Checkout main project
                     checkout scm
                     
-                    // Create and checkout backend directory
+                    // Checkout backend
                     sh 'mkdir -p backend'
                     dir('backend') {
                         git url: 'https://github.com/maryem012/PROJECT2023.git', branch: 'backend'
                     }
+                    
+                    // Debug: Show directory contents
+                    sh '''
+                        echo "Frontend Directory:"
+                        ls -la
+                        echo "Backend Directory:"
+                        ls -la backend
+                    '''
                 }
             }
         }
         
-        stage('Build Frontend') {
+        stage('Frontend Dependencies') {
             steps {
                 script {
-                    try {
+                    sh '''
+                        # Clear npm cache
+                        npm cache clean --force
+                        
+                        # Install frontend dependencies
+                        npm install --legacy-peer-deps
+                        
+                        # List installed packages
+                        npm list --depth=0
+                    '''
+                }
+            }
+        }
+        
+        stage('Frontend Build') {
+            steps {
+                script {
+                    sh '''
+                        # Set high memory limit
+                        export NODE_OPTIONS=--max_old_space_size=8192
+                        
+                        # Build Angular application
+                        ng build --configuration=production --verbose
+                    '''
+                }
+            }
+        }
+        
+        stage('Backend Dependencies') {
+            steps {
+                dir('backend') {
+                    script {
                         sh '''
-                            npm install --legacy-peer-deps
-                            npm run build
+                            # Clear npm cache
+                            npm cache clean --force
+                            
+                            # Install backend dependencies
+                            npm install
+                            
+                            # List installed packages
+                            npm list --depth=0
                         '''
-                    } catch (Exception e) {
-                        echo "Frontend build failed: ${e.getMessage()}"
-                        error "Frontend build failed"
                     }
                 }
             }
         }
         
-        stage('Build Backend') {
+        stage('Backend Build') {
             steps {
                 dir('backend') {
                     script {
-                        try {
-                            sh '''
-                                npm install
-                                npm run build
-                            '''
-                        } catch (Exception e) {
-                            echo "Backend build failed: ${e.getMessage()}"
-                            error "Backend build failed"
-                        }
+                        sh '''
+                            # Build backend
+                            npm run build
+                        '''
                     }
                 }
             }
@@ -76,34 +141,36 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    try {
-                        // Ensure Docker is logged in
-                        withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                            sh """
-                                echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
-                            """
-                        }
-                        
-                        // Frontend Docker Build and Push
+                    // Switch to desktop-linux docker context
+                    sh 'docker context use desktop-linux || true'
+                    
+                    // Login to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
-                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
-                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                            docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
-                            docker push ${FRONTEND_IMAGE}:latest
+                            echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
                         """
-                        
-                        // Backend Docker Build and Push
-                        dir('backend') {
-                            sh """
-                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
-                                docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
-                                docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
-                                docker push ${BACKEND_IMAGE}:latest
-                            """
-                        }
-                    } catch (Exception e) {
-                        echo "Docker build/push failed: ${e.getMessage()}"
-                        error "Docker build/push failed"
+                    }
+                    
+                    // Frontend Docker Build and Push
+                    sh """
+                        docker build \
+                            --build-arg NODE_OPTIONS=--max_old_space_size=8192 \
+                            -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
+                        docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
+                        docker push ${FRONTEND_IMAGE}:latest
+                    """
+                    
+                    // Backend Docker Build and Push
+                    dir('backend') {
+                        sh """
+                            docker build \
+                                --build-arg NODE_OPTIONS=--max_old_space_size=8192 \
+                                -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
+                            docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
+                            docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
+                            docker push ${BACKEND_IMAGE}:latest
+                        """
                     }
                 }
             }
@@ -111,13 +178,33 @@ pipeline {
     }
     
     post {
-        always {
-            sh 'docker logout || true'
-            cleanWs()
+        success {
+            echo 'Pipeline succeeded! Images built and pushed successfully.'
+            
+            // Optional: Send notification
+            // mail to: 'your-email@example.com',
+            //      subject: "Successful Pipeline: ${currentBuild.fullDisplayName}",
+            //      body: "Great job! Pipeline completed successfully."
         }
         
         failure {
-            echo 'Pipeline failed. Check the logs for details.'
+            echo 'Pipeline failed. Check the logs for detailed error messages.'
+            
+            // Optional: Send failure notification
+            // mail to: 'your-team@example.com',
+            //      subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+            //      body: "Check Jenkins logs for details."
+        }
+        
+        always {
+            // Cleanup steps
+            sh '''
+                docker logout || true
+                docker system prune -f || true
+            '''
+            
+            // Clean workspace
+            cleanWs()
         }
     }
 }

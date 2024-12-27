@@ -15,8 +15,7 @@ pipeline {
                 echo 'Repository Cloned'
             }
         }
-        
-      stage('Setup Environment') {
+stage('Setup Environment') {
     steps {
         script {
             sh '''
@@ -34,6 +33,7 @@ pipeline {
             '''
         }
     }
+}
 }
         
         stage('Install Dependencies') {

@@ -1,24 +1,26 @@
 pipeline {
     agent any
     
-
-    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
         DOCKER_TAG = "${BUILD_NUMBER}"
+        NODE_OPTIONS = "--max_old_space_size=4096"  // Increase memory limit
     }
     
     stages {
         stage('Prepare Environment') {
             steps {
                 script {
-                    // Verify Node.js and npm installation
                     sh '''
                         node --version
                         npm --version
                         docker --version
+                        
+                        # Clear npm cache and old installations
+                        npm cache clean --force
+                        rm -rf node_modules package-lock.json
                     '''
                 }
             }
@@ -27,10 +29,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout main branch (frontend)
                     checkout scm
-                    
-                    // Create and checkout backend directory
                     sh 'mkdir -p backend'
                     dir('backend') {
                         git url: 'https://github.com/maryem012/PROJECT2023.git', branch: 'backend'
@@ -44,10 +43,28 @@ pipeline {
                 script {
                     try {
                         sh '''
-                            npm install --legacy-peer-deps
-                            npm run build
+                            # Clean install
+                            rm -rf node_modules package-lock.json
+                            
+                            # Install dependencies with verbose logging
+                            npm install --legacy-peer-deps --verbose
+                            
+                            # Install Angular CLI globally
+                            npm install -g @angular/cli@16.1.0
+                            
+                            # Check Angular version and configuration
+                            ng version
+                            
+                            # Build with detailed logging
+                            ng build --configuration=production --verbose
                         '''
                     } catch (Exception e) {
+                        sh '''
+                            echo "Node version: $(node -v)"
+                            echo "NPM version: $(npm -v)"
+                            echo "Angular CLI version: $(ng version)"
+                            cat /var/lib/jenkins/.npm/_logs/*-debug.log || true
+                        '''
                         echo "Frontend build failed: ${e.getMessage()}"
                         error "Frontend build failed"
                     }
@@ -61,7 +78,8 @@ pipeline {
                     script {
                         try {
                             sh '''
-                                npm install
+                                rm -rf node_modules package-lock.json
+                                npm install --verbose
                                 npm run build
                             '''
                         } catch (Exception e) {
@@ -77,24 +95,18 @@ pipeline {
             steps {
                 script {
                     try {
-                        // Ensure Docker is logged in
                         withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                             sh """
                                 echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
-                            """
-                        }
-                        
-                        // Frontend Docker Build and Push
-                        sh """
-                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
-                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                            docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
-                            docker push ${FRONTEND_IMAGE}:latest
-                        """
-                        
-                        // Backend Docker Build and Push
-                        dir('backend') {
-                            sh """
+                                
+                                # Frontend
+                                docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                                docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
+                                docker push ${FRONTEND_IMAGE}:${DOCKER_TAG}
+                                docker push ${FRONTEND_IMAGE}:latest
+                                
+                                # Backend
+                                cd backend
                                 docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
                                 docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
                                 docker push ${BACKEND_IMAGE}:${DOCKER_TAG}
@@ -112,10 +124,13 @@ pipeline {
     
     post {
         always {
-            sh 'docker logout || true'
+            sh '''
+                docker logout || true
+                npm cache clean --force
+                rm -rf node_modules package-lock.json
+            '''
             cleanWs()
         }
-        
         failure {
             echo 'Pipeline failed. Check the logs for details.'
         }

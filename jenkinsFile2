@@ -4,99 +4,88 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
-        BACKEND_IMAGE = "maryam2904/project2023-backend"
+        DOCKER_IMAGE = "maryam2904/project2023-frontend"
         DOCKER_TAG = "${BUILD_NUMBER}"
     }
     
     stages {
-        stage('Debug Environment') {
-            steps {
-                script {
-                    // Comprehensive system checks
-                    sh '''
-                        pwd
-                        whoami
-                        ls -la
-                        node --version
-                        npm --version
-                        docker --version
-                        docker context ls
-                        docker info
-                    '''
-                }
-            }
-        }
-        
         stage('Checkout') {
             steps {
+                checkout scm
+                echo 'Repository Cloned'
+            }
+        }
+        
+        stage('Setup Environment') {
+            steps {
                 script {
-                    checkout scm
-                    sh 'mkdir -p backend'
-                    dir('backend') {
-                        git url: 'https://github.com/maryem012/PROJECT2023.git', branch: 'backend'
-                    }
-                    
-                    // Verify Dockerfiles
                     sh '''
-                        ls -l Dockerfile
-                        ls -l backend/Dockerfile
+                        # Install Node.js
+                        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                        sudo apt-get install -y nodejs
+                        
+                        # Install Angular CLI globally
+                        sudo npm install -g @angular/cli
+                        
+                        # Verify installations
+                        node --version
+                        npm --version
+                        ng version
                     '''
                 }
             }
         }
         
-        stage('Build Frontend') {
+        stage('Install Dependencies') {
             steps {
                 script {
                     sh '''
+                        # Install project dependencies
                         npm install --legacy-peer-deps
-                        npm run build || echo "Frontend build may have issues"
+                        npm audit fix --force || true
                     '''
                 }
             }
         }
         
-        stage('Build Backend') {
+        stage('Build Angular App') {
             steps {
-                dir('backend') {
-                    script {
-                        sh '''
-                            npm install
-                            npm run build || echo "Backend build may have issues"
-                        '''
-                    }
+                script {
+                    sh '''
+                        # Ensure Angular CLI is in PATH
+                        export PATH="$PATH:$(pwd)/node_modules/.bin"
+                        
+                        # Build production version
+                        ng build --configuration production
+                    '''
                 }
             }
         }
         
-        stage('Docker Build & Push') {
+        stage('Docker Build') {
             steps {
                 script {
-                    // Switch to desktop-linux context
-                    sh 'docker context use desktop-linux'
-                    
-                    // Login to Docker Hub
+                    sh """
+                        # Build Docker image
+                        docker context use desktop-linux
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                    """
+                }
+            }
+        }
+        
+        stage('Docker Push') {
+            steps {
+                script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh """
+                            # Login to Docker Hub
                             echo '$DOCKER_PASSWORD' | docker login -u '$DOCKER_USERNAME' --password-stdin
-                        """
-                    }
-                    
-                    // Frontend Docker Build and Push
-                    sh """
-                        docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} . || echo "Frontend Docker build failed"
-                        docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                        docker push ${FRONTEND_IMAGE}:${DOCKER_TAG} || echo "Frontend image push failed"
-                        docker push ${FRONTEND_IMAGE}:latest || echo "Frontend latest image push failed"
-                    """
-                    
-                    // Backend Docker Build and Push
-                    dir('backend') {
-                        sh """
-                            docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} . || echo "Backend Docker build failed"
-                            docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
-                            docker push ${BACKEND_IMAGE}:${DOCKER_TAG} || echo "Backend image push failed"
-                            docker push ${BACKEND_IMAGE}:latest || echo "Backend latest image push failed"
+                            
+                            # Push images
+                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker push ${DOCKER_IMAGE}:latest
                         """
                     }
                 }
@@ -105,13 +94,15 @@ pipeline {
     }
     
     post {
+        success {
+            echo 'Pipeline succeeded! Docker image pushed to registry'
+        }
+        failure { 
+            echo 'Pipeline failed! Check logs for details'
+        }
         always {
             sh 'docker logout || true'
-            cleanWs()
-        }
-        
-        failure {
-            echo 'Pipeline failed. Check the logs for detailed error messages.'
+            cleanWs()  // Clean workspace
         }
     }
 }

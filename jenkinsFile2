@@ -1,31 +1,14 @@
 pipeline {
     agent any
     
-
-    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
         DOCKER_TAG = "${GIT_COMMIT_SHORT}"
-        NODE_VERSION = '18.16.0'
-        ANGULAR_CLI_VERSION = '17.3.8'
     }
     
     stages {
-        stage('Environment Setup') {
-            steps {
-                script {
-                    sh '''
-                        node -v
-                        npm -v
-                        pwd
-                        ls -la
-                    '''
-                }
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -35,94 +18,54 @@ pipeline {
                 }
             }
         }
-        
-        stage('Workspace Preparation') {
+
+        stage('Create Dockerfile') {
             steps {
                 script {
-                    sh '''
-                        chmod -R 777 .
-                        mkdir -p node_modules
+                    // Create frontend Dockerfile
+                    writeFile file: 'Dockerfile', text: '''
+                        FROM node:18 AS builder
+                        WORKDIR /app
+                        
+                        # Copy package files
+                        COPY package*.json ./
+                        
+                        # Install dependencies
+                        RUN npm install --legacy-peer-deps
+                        
+                        # Copy source
+                        COPY . .
+                        
+                        # Build application
+                        RUN npm run build --configuration=production
+
+                        # Production stage
+                        FROM nginx:alpine
+                        COPY nginx.conf /etc/nginx/conf.d/default.conf
+                        COPY --from=builder /app/dist/tek-up-students /usr/share/nginx/html/
+                        EXPOSE 80
+                        CMD ["nginx", "-g", "daemon off;"]
                     '''
                 }
-            }
-        }
-        
-stage('Frontend Dependencies') {
-    steps {
-        script {
-            try {
-                sh '''
-                    # Clean existing dependencies
-                    npm cache clean --force
-                    rm -rf node_modules package-lock.json
-                    
-                    # First install @angular/cdk specifically
-                    npm install @angular/cdk@12.0.0 --save-exact
-                    
-                    # Then install remaining dependencies
-                    npm install --legacy-peer-deps --verbose
-                    
-                    # Verify installation
-                    ./node_modules/.bin/ng version
-                '''
-            } catch (Exception e) {
-                echo "Dependencies installation failed: ${e.getMessage()}"
-                sh 'cat /var/lib/jenkins/.npm/_logs/*-debug-0.log || true'
-                error "Dependencies installation failed"
-            }
-        }
-    }
-}
+                
+                dir('backend') {
+                    // Create backend Dockerfile
+                    writeFile file: 'Dockerfile', text: '''
+                        FROM node:18 AS builder
+                        WORKDIR /app
+                        COPY package*.json ./
+                        RUN npm install
+                        COPY . .
+                        RUN npm run build
 
-        
-        stage('Frontend Build') {
-            steps {
-                script {
-                    try {
-                        sh '''
-                            # Build frontend
-                            ng build --configuration production
-                        '''
-                    } catch (Exception e) {
-                        echo "Frontend build failed: ${e.getMessage()}"
-                        error "Frontend build failed"
-                    }
-                }
-            }
-        }
-        
-        stage('Backend Dependencies') {
-            steps {
-                dir('backend') {
-                    script {
-                        try {
-                            sh '''
-                                npm cache clean --force
-                                rm -rf node_modules package-lock.json
-                                npm install --verbose
-                            '''
-                        } catch (Exception e) {
-                            echo "Backend dependencies installation failed: ${e.getMessage()}"
-                            error "Backend dependencies installation failed"
-                        }
-                    }
-                }
-            }
-        }
-        
-        stage('Backend Build') {
-            steps {
-                dir('backend') {
-                    script {
-                        try {
-                            sh '''
-                                npm run build
-                            '''
-                        } catch (Exception e) {
-                            echo "Backend build failed: ${e.getMessage()}"
-                            error "Backend build failed"
-                        }
-                    }
+                        FROM node:18-alpine
+                        WORKDIR /app
+                        COPY package*.json ./
+                        RUN npm install --only=production
+                        COPY --from=builder /app/dist ./dist
+                        EXPOSE 3000
+                        CMD ["npm", "run", "start:prod"]
+                    '''
                 }
             }
         }
@@ -130,19 +73,23 @@ stage('Frontend Dependencies') {
         stage('Docker Build') {
             steps {
                 script {
-                    // Frontend Docker Build
-                    sh """
-                        docker context use desktop-linux
-                        docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
-                        docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
-                    """
-                    
-                    // Backend Docker Build
-                    dir('backend') {
+                    try {
+                        // Build frontend
                         sh """
-                            docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
-                            docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
+                            docker build -t ${FRONTEND_IMAGE}:${DOCKER_TAG} .
+                            docker tag ${FRONTEND_IMAGE}:${DOCKER_TAG} ${FRONTEND_IMAGE}:latest
                         """
+                        
+                        // Build backend
+                        dir('backend') {
+                            sh """
+                                docker build -t ${BACKEND_IMAGE}:${DOCKER_TAG} .
+                                docker tag ${BACKEND_IMAGE}:${DOCKER_TAG} ${BACKEND_IMAGE}:latest
+                            """
+                        }
+                    } catch (Exception e) {
+                        echo "Docker build failed: ${e.getMessage()}"
+                        error "Docker build failed"
                     }
                 }
             }
@@ -166,7 +113,7 @@ stage('Frontend Dependencies') {
             }
         }
         
-        stage('Docker Cleanup') {
+        stage('Cleanup') {
             steps {
                 script {
                     sh '''

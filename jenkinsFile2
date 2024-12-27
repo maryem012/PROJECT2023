@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('Docker-ID')
         FRONTEND_IMAGE = "maryam2904/project2023-frontend"
         BACKEND_IMAGE = "maryam2904/project2023-backend"
-        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_TAG = "${GIT_COMMIT_SHORT}"
     }
     
     stages {
@@ -23,6 +23,9 @@ pipeline {
             steps {
                 script {
                     sh '''
+                        # Install matching Angular CLI version
+                        npm install --save-dev @angular/cli@^17.3.8
+                        
                         # Install frontend dependencies
                         npm install --legacy-peer-deps
                     '''
@@ -33,10 +36,15 @@ pipeline {
         stage('Frontend Build') {
             steps {
                 script {
-                    sh '''
-                        # Build frontend
-                        ng build --configuration production
-                    '''
+                    try {
+                        sh '''
+                            # Build frontend
+                            ng build --configuration production
+                        '''
+                    } catch (Exception e) {
+                        echo "Frontend build failed: ${e.getMessage()}"
+                        error "Frontend build failed"
+                    }
                 }
             }
         }
@@ -58,10 +66,15 @@ pipeline {
             steps {
                 dir('backend') {
                     script {
-                        sh '''
-                            # Build backend
-                            npm run build
-                        '''
+                        try {
+                            sh '''
+                                # Build backend
+                                npm run build
+                            '''
+                        } catch (Exception e) {
+                            echo "Backend build failed: ${e.getMessage()}"
+                            error "Backend build failed"
+                        }
                     }
                 }
             }
@@ -108,6 +121,17 @@ pipeline {
                 }
             }
         }
+        
+        stage('Docker Cleanup') {
+            steps {
+                script {
+                    sh '''
+                        docker logout || true
+                        docker system prune -f  # Clean up unused resources
+                    '''
+                }
+            }
+        }
     }
     
     post {
@@ -118,10 +142,6 @@ pipeline {
             echo 'Pipeline failed. Check logs for details.'
         }
         always {
-            sh '''
-                docker logout || true
-                docker system prune -f  # Clean up unused resources
-            '''
             cleanWs()
         }
     }
